@@ -7,6 +7,7 @@ var flatiron = require('flatiron')
   , director = require('director')
   , routes = require('./server/routingTable')
   , pages = require('./server/pages')
+  , ecstatic = require('ecstatic')
   //  , io = require('./server/socket.io')
   ;
 
@@ -16,7 +17,8 @@ app.http.before = [
   connect.cookieParser('secret'),
   connect.cookieSession({
     cookie: { domain: 'localhost' }
-  })
+  }),
+ ecstatic(__dirname + '/client')
 ];
 
 // MongoDB
@@ -40,6 +42,7 @@ resourceful.use('mongodb', {
 
       // Start the app
       app.start(8888);
+      console.log('OK!');
     });
   }
 });

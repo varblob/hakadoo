@@ -3,7 +3,7 @@ var fs = require('fs')
 
 exports.index = function() {
   this.res.writeHead(200, {'Content-Type': 'text/html'});
-  this.res.end(exports.pages['a.html']);
+  this.res.end(exports.pages['battle.html']);
 }
 
 exports.anotherPage = function() {
@@ -19,9 +19,7 @@ exports.anotherPage = function() {
 exports.getHTMLFiles = function(path, cb) {
  
   fs.readdir(path, function(err, files) {
-    if (err) {
-      return cb(err);
-    }
+    if (err) return cb(err);
 
     var entries = {};
 
