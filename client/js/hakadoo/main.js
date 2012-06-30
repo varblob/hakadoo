@@ -7,5 +7,11 @@ $(document).ready(function() {
         lineNumbers: true,
         matchBrackets: true
     });
+    
+    // Disable Cut, Copy and Paste in the Code Mirror
+    $(".CodeMirror*").live("cut copy paste", function(e) {
+        e.preventDefault();
+    });
+    
 	$.hakadoo.remote();
 });
