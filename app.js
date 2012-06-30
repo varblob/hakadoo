@@ -8,7 +8,7 @@ var flatiron = require('flatiron')
   , routes = require('./server/routingTable')
   , pages = require('./server/pages')
   , ecstatic = require('ecstatic')
-  //  , io = require('./server/socket.io')
+  , io = require('./server/sockets')
   ;
 
 // Middleware stack
@@ -18,16 +18,13 @@ app.http.before = [
   connect.cookieSession({
     cookie: { domain: 'localhost' }
   }),
- ecstatic(__dirname + '/client')
+  ecstatic(__dirname + '/client')
 ];
 
 // MongoDB
 resourceful.use('mongodb', {
   uri: 'mongodb://localhost/hakadoo'
 , onConnect: function() {
-
-    // Start socket.io
-    // io.startListening();
 
     // Set up routing table
     app.router.mount(routes);
@@ -42,6 +39,10 @@ resourceful.use('mongodb', {
 
       // Start the app
       app.start(8888);
+
+      // Start socket.io
+      io.startListening();
+
       console.log('OK!');
     });
   }

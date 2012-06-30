@@ -10,6 +10,5 @@ module.exports = {
     });
   }]
 
-, '/' : { get: pages.index }
-, '/anotherPage': { get: pages.anotherPage }
+, '/battle': { get: pages.battle }
 };
