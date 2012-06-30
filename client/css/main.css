@@ -1,27 +1,66 @@
-#user_code {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    height: 100%;
-    right: 0px;
-    text-align: left;
-    padding: 0px;
-    margin: 0px;
+body {
+  background: #DCDCDC url('/img/gradient.png') repeat-x;
 }
 
-#opponent_code {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    height: 100%;
-    text-align: left;
-    padding: 0px;
-    margin: 0px;
+.clearfix:after{
+   content: ".";
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;
+}
+
+.buttons button{
+  border-radius: 999px;
+  background-color: #133969;
+  border: 5px solid #45648C;	
+  color:white;
+}
+
+.CodeMirror{
+	border-radius:20px;
+	margin:20px;
+	box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+	border:1px solid black;
+	background:#133969;
+}
+
+h1.title{
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+  text-shadow: 2px 2px rgba(255,255,255,0.4);
+  font-family: 'Wire One', sans-serif;
+  font-size: 4em;
+  background:#133969;
+  border-bottom: 5px solid #45648C;	
+}
+
+#right_container {
+    float:right;
+}
+
+#left_container {
+    float:left;
+}
+
+#left_container, #right_container{
+	width:50%;
+}
+
+#right_buttons, #left_buttons{
+	width:100px;
+}
+
+#right_buttons{
+	float:right;
+}
+
+#left_buttons{
+	float:left;
 }
 
 #compile_button {
-    position: relative;
     width: 100px;
     top: 5px;
     background-color: #cec;
@@ -31,7 +70,6 @@
 }
 
 #console {
-    position: relative;
     width: 100%;
     height: 48px;
     top: 10px;
@@ -41,7 +79,6 @@
 }
 
 #timer {
-    position:absolute;
     width: 40%;
     left: 30%;
     bottom: 5px;
@@ -52,7 +89,6 @@
 }
 
 #challenge_text {
-    position:absolute;
     width: 64%;
     height: 50%;
     left: 35%;
@@ -66,14 +102,12 @@
 /* sections (within containers) */
 
 #top_section, #left_section, #right_section, #bottom_section {
-    position: relative;
     height: 100%;
     width: 100%;
 }
 
 /* containers (contain sections) */
 
-#main_container, #top_container, #left_container, #right_container, #bottom_container, #left_buttons, #right_buttons { position: absolute; overflow: hidden; }
 
 #main_container {
     width: 100%;
