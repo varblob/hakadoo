@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
   // Connect to socket.io
-  var socket = io.connect('http://localhost');
+  var socket = io.connect(window.Array.host);
 
   $('#you').bind('change keyup', function() {
     var text = $('#you').val();
