@@ -2,45 +2,41 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    width: 99.4%;
-    height: 90%;
-    text-align: left;
-    padding: 0px;
-    margin: 0px;
-}
-
-#user_compile, #compete_compile {
-    position: absolute;
-    top: 91%;
-    left: 0px;
     width: 100%;
-    height: 6%;
+    height: 100%;
     text-align: left;
     padding: 0px;
     margin: 0px;
-    background-color: #cec;
-    text-align: center;
-    padding: 15 0 0 0;
 }
 
 #user_code { border: 2px dashed blue; }
 #compete_code { border: 2px dashed red; }
 
+#user_compile {
+    position: relative;
+    width: 100px;
+    top: 25%;
+    background-color: #cec;
+    margin: auto;
+    text-align: center;
+    padding: 10;
+}
+
 #timer {
     position:absolute;
-    width: 50%;
-    left: 25%;
-    height: 40px;
-    top: 50%;
+    width: 40%;
+    left: 30%;
+    bottom: 5px;
+    margin: auto;
     border:1px dashed red;
     text-align: center;
-    font-size: 20px;
+    font-size: 40px;
     font-weight: bolder;
 }
 
 /* sections (within containers) */
 
-#top_section, #left_section, #right_section {
+#top_section, #left_section, #right_section, #bottom_section {
     position: relative;
     height: 100%;
     width: 100%;
@@ -48,41 +44,42 @@
 
 /* containers (contain sections) */
 
+#main_container, #top_container, #left_container, #right_container, #bottom_container { position: absolute; overflow: hidden; }
+
 #main_container {
     width: 100%;
     height: 100%;
-    position: absolute;
     top: 0;
     left: 0;
 }
 
 #top_container {
-    position: absolute;
     top: 0;
     left: 0;
     height: 20%;
     width: 100%;
-    overflow: hidden;
 }
 
 #left_container {
-    position: absolute;
     top: 20%;
     left: 0;
-    height: 80%;
+    height: 70%;
     width: 50%;
-    overflow: hidden;
 }
 
 #right_container {
-    position: absolute;
     top: 20%;
     left: 50%;
-    height: 80%;
+    height: 70%;
     width: 50%;
-    overflow: hidden;
 }
 
+#bottom_container {
+    top: 90%;
+    left: 0px;
+    width: 100%;
+    height: 10%;
+}
 
 
 
