@@ -1,28 +1,29 @@
-$.hakadoo = $.hakadoo || {};
+
 $.hakadoo.remote = function(){
 	'use strict';
 	// Connect to socket.io
 	var socket = io.connect(window.Array.host),
 		you = CodeMirror.fromTextArea(document.getElementById("user_code"), {
 			lineNumbers: true,
-			matchBrackets: true
+			matchBrackets: true,
+			onChange: function(e) {
+				var text = you.getValue();
+				console.log('sending text', text);
+				socket.emit('textEntered', {text: text});
+			}
 		}),
 		them = CodeMirror.fromTextArea(document.getElementById("compete_code"), {
 			lineNumbers: true,
 			matchBrackets: true
 		});
-	 
-	$('#user_cade').bind('change keyup', function() {
-		var text = you.getValue();
-		console.log('sending text', text);
-		socket.emit('textUpdate', {text: text});
-	});
 	
-	socket.on('you:textUpdate', function(data) {
-		you.setValue(data.text);
-	});
+	// socket.on('you:textUpdate', function(data) {
+		// console.log('other:textUpdate' + data.text);
+		// you.setValue(data.text);
+	// });
 	  
-	socket.on('other:textUpdate', function(data) {
+	socket.on('textUpdate', function(data) {
+		console.log('textUpdate' + data.text);
 		them.setValue(data.text);
 	});
 	
