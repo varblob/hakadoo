@@ -1,9 +1,9 @@
 $(document).ready(function() {
-		'use strict';
-	// Connect to socket.io
+	'use strict';
 	
 	var questionIndex = 1,
 		question = $.hakadoo.questions[questionIndex],
+		// Connect to socket.io
 		socket = io.connect(window.Array.host),
 		you,
 		them = CodeMirror.fromTextArea(document.getElementById("compete_code"), {
@@ -12,11 +12,11 @@ $(document).ready(function() {
 		}),
 		compileHandler = function(){
 			console.log('compile');
-	    	try{
-	    		$.hakadoo.validate(questionIndex, you.getValue());
-	    	}catch(e){
-	    		$('#console').append('<li>' + e.message + '</li>');
-	    	}
+			try {
+				$.hakadoo.validate(questionIndex, you.getValue());
+			} catch(e) {
+				$('#console').append('<li>' + e.message + '</li>');
+			}
 		};
 		
 	CodeMirror.keyMap.hakadoo = {
@@ -64,7 +64,7 @@ $(document).ready(function() {
 	$('#challenge_text').text(question.question);
 	
 	$('#compile_button').click(function(){
-    	compileHandler();
+		compileHandler();
     });
     // Disable Cut, Copy and Paste in the Code Mirror
     // $(".CodeMirror*").live("cut copy paste", function(e) {
