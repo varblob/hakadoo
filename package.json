@@ -1,5 +1,6 @@
 {
   "description": "Hakadoo",
+  "name": "Hakadoo",
   "version": "0.0.0",
   "private": false,
   "dependencies": {
@@ -13,6 +14,7 @@
     "socket.io": "0.9.x",
     "connect": "2.3.0",
     "director": "https://github.com/flatiron/director/tarball/master",
-    "request": "2.9.x"
-  },
+    "request": "2.9.x",
+    "ecstatic": "0.1.x"
+  }
 }
