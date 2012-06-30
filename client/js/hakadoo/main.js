@@ -3,9 +3,15 @@ $(document).ready(function() {
         lineNumbers: true,
         matchBrackets: true
     }),
-    them = CodeMirror.fromTextArea(document.getElementById("compete_code"), {
+    them = CodeMirror.fromTextArea(document.getElementById("opponent_code"), {
         lineNumbers: true,
         matchBrackets: true
     });
+    
+    // Disable Cut, Copy and Paste in the Code Mirror
+    $(".CodeMirror*").live("cut copy paste", function(e) {
+        e.preventDefault();
+    });
+    
 	$.hakadoo.remote();
 });
