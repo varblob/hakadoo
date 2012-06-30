@@ -42,10 +42,21 @@ function bindBattleLogic(players) {
 
     me.emit('ready', {});
 
+    // When a player enters text, inform the opponent
     me.on('textEntered', function(data) {
       var text = data.text.toUpperCase();
-      console.log('go text', text);
       opponent.emit('textUpdate', { text: text });
     });
+
+    // For the battle actions, simply relay the command from player to player
+    me.on('remove', function() {
+      opponent.emit('remove', {});
+    });
+
+    me.on('swap', function() {
+      opponent.emit('swap', {});
+    });
+
+    // (Peek is handled entirely on the client side)
   });
 }
