@@ -1,16 +1,22 @@
 $(document).ready(function() {
 
+  // Read the profile data for this user
+  var user = $.parseJSON($('#page-data').html());
+
   // Connect to socket.io
-  var socket = io.connect('http://' + window.location.host);
+  var socket = io.connect('http://' + window.location.host, user);
+  socket.emit('introduction', user);
 
   // Get either 'waiting' or 'ready'
   socket.on('waiting', function() {
     $('#status').text('Waiting...');
   });
 
-  socket.on('ready', function() {
+  socket.on('ready', function(data) {
     $('#status').text('Go!');   
-    
+    var otherUser = data.opponent;
+    console.log(user, otherUser);
+
     var $you = $('#you')
       , $opponent = $('#opponent')
       , opponentText = '';

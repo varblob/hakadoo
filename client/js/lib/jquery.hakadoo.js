@@ -55,7 +55,8 @@ jQuery.hakadoo = ( function( $ ) {
     }
 
     return {
-        validate: _validate
+        validate: _validate,
+        questions: _questions
     };
 
 } ( jQuery ) );

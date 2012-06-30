@@ -10,23 +10,26 @@ exports.startListening = function() {
   var io = socketIO.listen(app.server);
   console.log('Listening', app.server);
 
-  io.sockets.on('connection', function (socket) { 
-    console.log('connection from', socket);
+  io.sockets.on('connection', function(socket) { 
+    socket.on('introduction', function(user) {
+   
+      socket.hakadoo = user;
 
-    // A partner is already waiting
-    if (exports.single) {
-      var partner = exports.single;
-      var players = [socket, partner];
-      exports.single = null;
-  
-      // Battle logic...
-      bindBattleLogic(players);
-  
-    // Otherwise, this is an odd connection. Wait for a partner
-    } else {
-      exports.single = socket;
-      socket.emit('waiting');
-    }
+      // A partner is already waiting
+      if (exports.single) {
+        var partner = exports.single;
+        var players = [socket, partner];
+        exports.single = null;
+    
+        // Battle logic...
+        bindBattleLogic(players);
+    
+      // Otherwise, this is an odd connection. Wait for a partner
+      } else {
+        exports.single = socket;
+        socket.emit('waiting');
+      }
+    });
   });
 };
 
@@ -40,11 +43,11 @@ function bindBattleLogic(players) {
   players.forEach(function(me, i) {
     var opponent = players[i^1];
 
-    me.emit('ready', {});
+    me.emit('ready', {opponent: opponent.hakadoo});
 
     // When a player enters text, inform the opponent
     me.on('textEntered', function(data) {
-      var text = data.text.toUpperCase();
+      var text = data.text;
       opponent.emit('textUpdate', { text: text });
     });
 

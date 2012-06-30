@@ -11,4 +11,6 @@ module.exports = {
   }]
 
 , '/battle': { get: pages.battle }
+, '/login': { get: pages.login }
+, '/callback': { get: pages.callback }
 };

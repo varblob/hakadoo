@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hakadoo</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#centered')
+          .mouseenter(function() { 
+            $(this).css('background-color', '#224A7C'); 
+          })
+          .mouseleave(function() {
+             $(this).css('background-color', '#133969'); 
+          });
+      });
+    </script>
+    <link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="css/landing.css"/>
+  </head>
+  <body>
+    <div id="centered">
+      <a href="/login">
+        <div id="bubble">
+          <h1>Hakadoo</h1> 
+          <h2>Sign in with Twitter</h2>
+        </div>
+      </a>
+    </div>
+  </body>
+</html>
