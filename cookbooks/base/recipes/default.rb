@@ -37,3 +37,7 @@ end
 apt_package "mongodb-10gen" do
   action :install
 end
+
+execute "npm-install" do
+  command "cd /vagrant && npm install"
+end
