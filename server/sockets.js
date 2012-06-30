@@ -44,7 +44,7 @@ function bindBattleLogic(players) {
 
     // When a player enters text, inform the opponent
     me.on('textEntered', function(data) {
-      var text = data.text.toUpperCase();
+      var text = data.text;
       opponent.emit('textUpdate', { text: text });
     });
 
