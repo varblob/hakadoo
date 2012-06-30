@@ -6,6 +6,10 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/lib/jquery.hakadoo.js"></script>
 	<script type="text/javascript" src="js/hakadoo/main.js"></script>
+	<script src="js/lib/codemirror/codemirror.js"></script>
+	<script src="js/lib/codemirror/mode/javascript/javascript.js"></script>
+
+	<link rel="stylesheet" href="js/lib/codemirror/codemirror.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css" />
 	<title>Hackadoo</title>
 </head>
@@ -21,14 +25,17 @@
 		</div>
 		<div id="left_container">
 			<div id="left_section">
-				<pre id="user_code">user code</pre>
-				<div id="user_compile">Compile</div>
+				<textarea id="user_code">user code</textarea>
 			</div>
 		</div>
 		<div id="right_container">
 			<div id="right_section">
 				<pre id="compete_code">compete code</pre>
-				<div id="compete_compile">Compile</div>
+			</div>
+		</div>
+		<div id="bottom_container">
+			<div id="bottom_section">
+				<div id="user_compile">Compile</div>
 			</div>
 		</div>
 	</div>
