@@ -43,6 +43,8 @@ exports.login = function() {
     var redirTo = 'https://twitter.com/oauth/authenticate?' + querystring.stringify({
       oauth_token: oauth_token
     , oauth_callback: callback
+    , force_login: 'true'
+    , screen_name: ''
     });  
 
     self.res.writeHead(302, {'Location': redirTo});
@@ -56,6 +58,8 @@ exports.login = function() {
 exports.callback = function() {
   var self = this;
   var session = this.req.session;
+
+  console.log('+++', session);
 
   if (!session.oauth) {
     return self.res.end('Authorization failed.');

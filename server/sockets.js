@@ -53,12 +53,10 @@ function bindBattleLogic(players) {
 
     // For the battle actions, simply relay the command from player to player
     me.on('remove', function() {
-      console.log('got a remove event');
       opponent.emit('remove', {});
     });
 
     me.on('swap', function() {
-      console.log('got a swap event');
       opponent.emit('swap', {});
     });
 
@@ -68,6 +66,8 @@ function bindBattleLogic(players) {
       }
     });
 
-    // (Peek is handled entirely on the client side)
+    me.on('peek', function() {
+      opponent.emit('peek', {});
+    });
   });
 }
