@@ -1,16 +1,24 @@
-#user_code, #compete_code {
+#user_code {
     position: absolute;
     top: 0px;
     left: 0px;
-    width: 100%;
     height: 100%;
+    right: 0px;
     text-align: left;
     padding: 0px;
     margin: 0px;
 }
 
-#user_code { border: 2px dashed blue; }
-#compete_code { border: 2px dashed red; }
+#opponent_code {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 100%;
+    text-align: left;
+    padding: 0px;
+    margin: 0px;
+}
 
 #compile_button {
     position: relative;
@@ -65,7 +73,7 @@
 
 /* containers (contain sections) */
 
-#main_container, #top_container, #left_container, #right_container, #bottom_container { position: absolute; overflow: hidden; }
+#main_container, #top_container, #left_container, #right_container, #bottom_container, #left_buttons, #right_buttons { position: absolute; overflow: hidden; }
 
 #main_container {
     width: 100%;
@@ -83,16 +91,16 @@
 
 #left_container {
     top: 150px;
-    left: 0;
+    left: 80px;
     bottom: 100px;
-    width: 50%;
+    right: 50%;
 }
 
 #right_container {
     top: 150px;
     left: 50%;
     bottom: 100px;
-    width: 50%;
+    right: 80px;
 }
 
 #bottom_container {
@@ -102,11 +110,31 @@
     width: 100%;
 }
 
+#left_buttons {
+    top: 150px;
+    left: 0px;
+    bottom: 100px;
+    width: 80px;
+    text-align: center;
+}
 
+#right_buttons {
+    top: 150px;
+    right: 0px;
+    bottom: 100px;
+    width: 80px;
+    text-align: center;
+}
 
+/* classes */
 
-
-
+.attack_button {
+    width: 50px;
+    height: 50px;
+    padding: 0px;
+    margin: 15px;
+    background-color: silver;
+}
 
 
 

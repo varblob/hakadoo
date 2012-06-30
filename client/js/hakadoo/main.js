@@ -3,7 +3,7 @@ $(document).ready(function() {
         lineNumbers: true,
         matchBrackets: true
     }),
-    them = CodeMirror.fromTextArea(document.getElementById("compete_code"), {
+    them = CodeMirror.fromTextArea(document.getElementById("opponent_code"), {
         lineNumbers: true,
         matchBrackets: true
     });
