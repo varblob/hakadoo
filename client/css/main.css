@@ -171,6 +171,8 @@ h1.title{
     background-color: silver;
 }
 
-
+.link {
+    cursor: pointer;
+}
 
 

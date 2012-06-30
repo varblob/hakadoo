@@ -1,6 +1,27 @@
 $(document).ready(function() {
 	'use strict';
-	
+
+    //pad timer with zeros
+    var lpad = function(value, padding) {
+        var zeroes = "0";
+
+        for (var i = 0; i < padding; i++) { zeroes += "0"; }
+
+        return (zeroes + value).slice(padding * -1);
+    }
+    var remaining, elapsed = 0, limit = 300; //amount of time in seconds
+    var timer = setInterval(function() {
+        elapsed++;
+        remaining = limit-elapsed;
+        $("#timer").html(function() { //display time
+            return Math.floor(remaining/60)+":"+lpad(remaining-(Math.floor(remaining/60)*60),2);
+        });
+        if (remaining == 0) { //timer finished
+            clearInterval(timer);
+            alert("timer finished");
+        }
+    }, 1000); return;
+
 	var questionIndex = 1,
 		question = $.hakadoo.questions[questionIndex],
 		// Connect to socket.io
