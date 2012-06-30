@@ -1,0 +1,27 @@
+{
+  "description": "Hakadoo",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "union": "0.1.x",
+    "flatiron": "0.2.x",
+    "resourceful-mongo": "https://github.com/markover/resourceful-mongo/tarball/master",
+    "oauth": "0.9.x",
+    "async": "0.1.x",
+    "mkdirp": "0.3.x",
+    "moment": "1.6.x",
+    "socket.io": "0.9.x",
+    "connect": "2.3.0",
+    "director": "https://github.com/flatiron/director/tarball/master",
+    "request": "2.9.x"
+  },
+  "devDependencies": {
+    "api-easy": "0.3.x",
+    "vows": "0.6.x"
+  },
+  "scripts": {
+    "test": "vows --spec",
+    "start": "node app.js"
+  },
+  "name": "mframe"
+}
