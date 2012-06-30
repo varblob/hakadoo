@@ -62,6 +62,12 @@ function bindBattleLogic(players) {
       opponent.emit('swap', {});
     });
 
+    me.on('compile', function(data) {
+      if (data.worked) {
+        opponent.emit('lose', {})
+      }
+    });
+
     // (Peek is handled entirely on the client side)
   });
 }

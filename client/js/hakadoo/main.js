@@ -1,8 +1,9 @@
 $(document).ready(function() {
 	'use strict';
-	
+
 	var questionIndex = 1,
 		question = $.hakadoo.questions[questionIndex],
+
 		// Connect to socket.io
 		socket = io.connect(window.Array.host),
 		them = CodeMirror.fromTextArea(document.getElementById("opponent_code"), {
@@ -28,7 +29,9 @@ $(document).ready(function() {
 			
 			try {
 				worked = $.hakadoo.validate(questionIndex, you.getValue());
+				$('#console').append('<li>Congratulations! You win!</li>');
 			} catch(e) {
+        worked = false;
 				$('#console').append('<li>' + e.message + '</li>');
 			}
 			socket.emit('compile', {worked: worked});
@@ -59,6 +62,10 @@ $(document).ready(function() {
 	    	}
 	    };
 	
+  // Read the profile data for this user
+  var user = $.parseJSON($('#page-data').html());
+  socket.emit('introduction', user);
+
 	//initing the ability counts    
 	updateAbilities(abilities, $('#left_buttons'));
 	updateAbilities(opponentAbilities, $('#right_buttons'));
@@ -154,15 +161,21 @@ $(document).ready(function() {
 	});
 	
 	socket.on('ready', function(data){
-		console.log('ready');
+    var opponent = data.opponent;
+    var templateUserBox = function(user, $box) {
+      console.log(user.avatar);
+      $box.find('.avatar').css('background-image', "url('" + user.avatar + "')");
+      $box.find('.username').text(user.name);
+      $box.find('.username').attr('href', 'http://twitter.com/' + user.name);
+    };
+
+    templateUserBox(user, $('#self'));
+    templateUserBox(opponent, $('#opponent'));
+
 		you.setValue('function(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
 	});
 	
-	socket.on('compile', function(data){
-		
-	});
-	
-
- 
-   
+	socket.on('lose', function() {
+    $('#console').append('<li>You lose!</li>');
+	});   
 });

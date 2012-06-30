@@ -67,12 +67,12 @@ exports.callback = function() {
   oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier, 
     function(err, oauth_access_token, oauth_access_token_secret, results) {
 
-    var screen_name = results.screen_name;
-
     if (err) {
       console.log(err);
       return self.res.end('Authorization failed.');
     }
+
+    var screen_name = results.screen_name;
 
     oauth.access_token = oauth_access_token;
     oauth.access_token_secret = oauth_access_token_secret;
