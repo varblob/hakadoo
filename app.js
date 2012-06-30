@@ -6,6 +6,7 @@ var flatiron = require('flatiron')
   , async = require('async')
   , director = require('director')
   , routes = require('./server/routingTable')
+  , pages = require('./server/pages')
   //  , io = require('./server/socket.io')
   ;
 
@@ -33,8 +34,12 @@ resourceful.use('mongodb', {
     , strict: false
     , async: true
     });
+ 
+    // Read static files to memory
+    pages.getHTMLFiles('./client/html', function(err, contents) {
 
-    // Start the app
-    app.start(8888);
+      // Start the app
+      app.start(8888);
+    });
   }
 });

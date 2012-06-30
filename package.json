@@ -1,7 +1,7 @@
 {
   "description": "Hakadoo",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "union": "0.1.x",
     "flatiron": "0.2.x",
@@ -15,13 +15,4 @@
     "director": "https://github.com/flatiron/director/tarball/master",
     "request": "2.9.x"
   },
-  "devDependencies": {
-    "api-easy": "0.3.x",
-    "vows": "0.6.x"
-  },
-  "scripts": {
-    "test": "vows --spec",
-    "start": "node app.js"
-  },
-  "name": "mframe"
 }
