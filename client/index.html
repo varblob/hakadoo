@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="js/hakadoo/remote.js"></script>
 	<script type="text/javascript" src="js/hakadoo/main.js"></script>
 	
-
+	<link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="js/lib/codemirror/codemirror.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css" />
 	<title>Hackadoo</title>
@@ -18,8 +18,9 @@
 <body>
 	<div id="main_container">
 		<div id="top_container">
+			<h1 class="title">Hackadoo</h1>
+			
 			<div id="top_section">
-				Hackadoo
 				<div id="timer">
 					00:00:00
 				</div>
@@ -28,52 +29,52 @@
 				</div>
 			</div>
 		</div>
-		<div id="left_container">
+		<div id="left_container" class="clearfix">
+			<div id="left_buttons" class="buttons">
+				<button class="attack_button remove">
+					<div class="label">nuke</div>
+					<div class="count">-</div>
+				</button>
+				<button class="attack_button swap">
+					<div class="label">swap</div>
+					<div class="count">-</div>
+				</button>
+				<button class="attack_button peek">
+					<div class="label">reveal</div>
+					<div class="count">-</div>
+				</button>
+			</div>
 			<div id="left_section">
 				<textarea id="user_code"></textarea>
 			</div>
 		</div>
-		<div id="right_container">
+		<div id="right_container" class="clearfix">
+			<div id="right_buttons" class="buttons">
+				<button class="attack_button remove">
+					<div class="label">nuke</div>
+					<div class="count">-</div>
+				</button>
+				<button class="attack_button swap">
+					<div class="label">swap</div>
+					<div class="count">-</div>
+				</button>
+				<button class="attack_button peek">
+					<div class="label">reveal</div>
+					<div class="count">-</div>
+				</button>
+			</div>
 			<div id="right_section">
 				<textarea id="opponent_code"></textarea>
 			</div>
 		</div>
+		
 		<div id="bottom_container">
 			<div id="bottom_section">
 				<div id="compile_button">Compile</div>
 				<ol id="console"></ol>
 			</div>
 		</div>
-
-		<div id="left_buttons">
-			<button class="attack_button remove">
-				<div class="label">nuke</div>
-				<div class="count">-</div>
-			</button>
-			<button class="attack_button swap">
-				<div class="label">swap</div>
-				<div class="count">-</div>
-			</button>
-			<div class="attack_button peek">
-				<div class="label">reveal</div>
-				<div class="count">-</div>
-			</div>
-		</div>
 		
-		<div id="right_buttons">
-			<button class="attack_button remove">
-				<div class="label">nuke</div>
-				<div class="count">-</div>
-			</button>
-			<button class="attack_button swap">
-				<div class="label">swap</div>
-				<div class="count">-</div>
-			</button>
-			<div class="attack_button peek">
-				<div class="label">reveal</div>
-				<div class="count">-</div>
-			</div>
-		</div>
 	</div>
 </body>
 </html>
