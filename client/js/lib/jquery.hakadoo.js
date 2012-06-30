@@ -18,7 +18,7 @@ jQuery.hakadoo = ( function( $ ) {
             'randomTest': ["Five minus Four = 1"],
         },
         {
-            'question': "Given an array of 3 int values, a b c, return their sum. However, if one of the values is 13 then it does not count towards the sum and values to its right do not count. So for example, if b is 13, then both b and c do not count.",
+            'question': "Given an array of 3 int values, a b c, return their sum. However, if one of the values is 13 then it does not count towards the sum and the immediate value to its right does not count. So for example, if b is 13, then both b and c do not count.",
             'example': "run([1, 2, 3]) -> 6, run([1, 2, 13]) -> 3, run([1, 13, 2]) -> 1",
             'answer_key': 'function HAKADOO_run2(s) { var result = 0; for (var i = 0; i < s.length; i++) { if (s[i] == 13) { i++; } else { result += s[i]; } } return result; }',
             'alwaysTest': [[1, 2, 3], [3, 5, 13], [1, -13, 2], [13, 13, 2], [-13, 13, 2], [13, 13, 13]],
