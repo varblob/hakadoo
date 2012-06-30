@@ -12,7 +12,7 @@ jQuery.hakadoo = ( function( $ ) {
         },
         {
             'question': "Write a function that reverses the word order (but not the words themselves) in a sentance",
-            'example': 'run("How are you?") -> you? are How'
+            'example': 'run("How are you?") -> you? are How',
             'answer_key': 'function HAKADOO_run2(s) { return s.split(" ").reverse().join(" "); }',
             'alwaysTest': ["Hello world!", "JustOneWord", "One Two Three Four Five"],
             'randomTest': ["Five minus Four = 1"],
@@ -55,7 +55,8 @@ jQuery.hakadoo = ( function( $ ) {
     }
 
     return {
-        validate: _validate
+        validate: _validate,
+        questions: _questions
     };
 
 } ( jQuery ) );
