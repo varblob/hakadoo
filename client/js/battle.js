@@ -13,33 +13,36 @@ $(document).ready(function() {
     
     var $you = $('#you');
 
-    // Bind the battle events
-    $you.bind('change keyup', function() {
+    function sendTextUpdate() {
       var text = $you.val();
-      console.log('sending text', text);
       socket.emit('textEntered', {text: text});
-    });
+    }
+
+    // Bind the battle events
+    $you.bind('change keyup', sendTextUpdate);
 
     socket.on('textUpdate', function(data) {
       $('#opponent').text(data.text);
     });
 
-    socket.on('removeLine', function() {
+    socket.on('remove', function() {
       var lines = $you.val().split('\n');
       var killLine = ~~(Math.random() * lines.length);
       var newText = lines.filter(function(line, i) {
         return i !== killLine;
       }).join('\n');
       $you.val(newText);
+      sendTextUpdate();
     });
 
-    socket.on('swapChars', function() {
+    socket.on('swap', function() {
       var text = $you.val().split('');
       var swap = ~~(Math.random() * text.length - 1);
       var holder = text[swap];
       text[swap] = text[swap + 1]
       text[swap + 1] = holder;
       $you.val(text.join(''));
+      sendTextUpdate();
     });
 
     $('#swap').click(function() {
