@@ -37,6 +37,7 @@ $(document).ready(function() {
 		keyMap: 'hakadoo'
 	});
 	
+	
 	// socket.on('you:textUpdate', function(data) {
 		// console.log('other:textUpdate' + data.text);
 		// you.setValue(data.text);
@@ -57,16 +58,16 @@ $(document).ready(function() {
 	
 	socket.on('ready', function(data){
 		console.log('ready');
+		you.setValue('function(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
 	});
 	
 	$('#challenge_text').text(question.question);
-	
 	
 	$('#compile_button').click(function(){
     	compileHandler();
     });
     // Disable Cut, Copy and Paste in the Code Mirror
-    $(".CodeMirror*").live("cut copy paste", function(e) {
-        e.preventDefault();
-    });
+    // $(".CodeMirror*").live("cut copy paste", function(e) {
+        // e.preventDefault();
+    // });
 });
