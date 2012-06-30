@@ -2,9 +2,6 @@ var fs = require('fs')
   , async = require('async');
 
 exports.battle = function() {
-
-  
-
   this.res.writeHead(200, {'Content-Type': 'text/html'});
   this.res.end(exports.pages['battle.html']);
 }
