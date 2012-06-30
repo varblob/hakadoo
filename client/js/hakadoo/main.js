@@ -14,13 +14,13 @@ $(document).ready(function() {
         elapsed++;
         remaining = limit-elapsed;
         $("#timer").html(function() { //display time
-            return Math.floor(remaining/60)+":"+lpad(remaining-(Math.floor(remaining/60)*60),2);
+            return lpad(Math.floor(remaining/60), 2) +":"+lpad(remaining-(Math.floor(remaining/60)*60),2);
         });
         if (remaining == 0) { //timer finished
             clearInterval(timer);
             alert("timer finished");
         }
-    }, 1000); return;
+    }, 1000);
 
 	var questionIndex = 1,
 		question = $.hakadoo.questions[questionIndex],
@@ -28,7 +28,8 @@ $(document).ready(function() {
 		socket = io.connect(window.Array.host),
 		them = CodeMirror.fromTextArea(document.getElementById("opponent_code"), {
 			lineNumbers: true,
-			matchBrackets: true
+			matchBrackets: true,
+			theme: 'xq-dark'
 		}),
 		abilities = {
 			remove: 3,
@@ -99,7 +100,8 @@ $(document).ready(function() {
 			console.log('sending text', text);
 			socket.emit('textEntered', {text: text});
 		},
-		keyMap: 'hakadoo'
+		keyMap: 'hakadoo',
+		theme: 'xq-dark'
 	});
 	
 	$('#challenge_text').text(question.question);
