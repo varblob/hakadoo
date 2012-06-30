@@ -153,3 +153,7 @@
   border-radius: 999px;
   border: 1px solid red;
 }
+
+.link {
+    cursor: pointer;
+}
