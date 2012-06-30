@@ -1,14 +1,12 @@
 var fs = require('fs')
   , async = require('async');
 
-exports.index = function() {
+exports.battle = function() {
+
+  
+
   this.res.writeHead(200, {'Content-Type': 'text/html'});
   this.res.end(exports.pages['battle.html']);
-}
-
-exports.anotherPage = function() {
-  this.res.writeHead(200, {'Content-Type': 'text/html'});
-  this.res.end(exports.pages['b.html']);
 }
 
 /*
