@@ -1,7 +1,7 @@
 $(document).ready(function() {'use strict';
 
   var questionIndex = 1
-  	, question = $.hakadoo.questions[questionIndex]
+		, question = $.hakadoo.questions[questionIndex]
 	  // Connect to socket.io
 		, socket = io.connect(window.Array.host)
 		// User abilities
