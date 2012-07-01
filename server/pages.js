@@ -10,7 +10,7 @@ exports.battle = function() {
   this.res.end(exports.pages['battle.html']);
 }
 
-var callback = 'http://localhost:8888/callback';
+var callback = 'http://33.33.33.10:8888/callback';
 
 // Twitter OAuth
 var oa = new OAuth(

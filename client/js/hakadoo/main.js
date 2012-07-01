@@ -9,7 +9,7 @@ $(document).ready(function() {
 		them = CodeMirror.fromTextArea(document.getElementById("opponent_code"), {
 			lineNumbers: true,
 			matchBrackets: true,
-			theme: 'xq-dark'
+			theme: 'night'
 		}),
 		abilities = {
 			remove: 3,
@@ -87,7 +87,7 @@ $(document).ready(function() {
 			socket.emit('textEntered', {text: text});
 		},
 		keyMap: 'hakadoo',
-		theme: 'xq-dark'
+		theme: 'night'
 	});
 	
 	$('#challenge_text').text(question.question);
