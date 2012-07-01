@@ -59,7 +59,7 @@ $(document).ready(function() {'use strict';
   });
 
   // init questions
-  $('#challenge_text').text(question.question);
+  $('#challenge_text').text("Waiting for an opponent...");
 
   // binding click handlers
   $('#compile_button').click(function() {
@@ -139,10 +139,14 @@ $(document).ready(function() {'use strict';
       });
       if(remaining === 0) {//timer finished
         clearInterval(timer);
-        $('#console').append('<li>Time out. You BOTH lose!</li>');
+        $('#console').append('<li class="positive">Time out. You BOTH lose!</li>');
       }
     }, 1000);
+    
+    // setting the challenge text
+    $('#challenge_text').text(question.question);
 
+		// setting user profile info 
     templateUserBox(user, $('#self'));
     templateUserBox(opponent, $('#opponent'));
 
