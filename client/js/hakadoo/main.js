@@ -202,7 +202,7 @@ $(document).ready(function() {
     }, 1000);
 
     // Set up function header
-		you.setValue('function(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
+		you.setValue('function run(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
 	});
 	
 	socket.on('lose', function() {
