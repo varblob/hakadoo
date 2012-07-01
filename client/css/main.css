@@ -29,7 +29,7 @@ body {
 }
 
 .CodeMirror{
-	border-radius:20px;
+	border-radius:10px;
 	margin:20px;
 	box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 	border:1px solid black;
@@ -110,7 +110,8 @@ h1.title{
     background:white;
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 	padding:20px;
-	margin:0 auto;    
+	margin:0 auto;
+  color: #464646;
 }
 
 /* containers (contain sections) */
@@ -179,6 +180,7 @@ h1.title{
     padding: 0px;
     margin: 15px;
     background-color: silver;
+    cursor: pointer;
 }
 
 .user_box {
@@ -190,7 +192,6 @@ h1.title{
   width: 68px;
   height: 68px;
   border-radius: 999px;
-  border: 1px solid red;
 }
 
 .link {
