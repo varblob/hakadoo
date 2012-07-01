@@ -11,7 +11,7 @@ jQuery.hakadoo = ( function( $ ) {
             'randomTest': [2, 3, 4, 5, 6, 7, 8, 9],
         },
         {
-            'question': "Write a function that reverses the word order (but not the words themselves) in a sentance",
+            'question': "Write a function that reverses the word order (but not the words themselves) in a sentence",
             'example': 'run("How are you?") -> you? are How',
             'answer_key': 'function HAKADOO_run2(s) { return s.split(" ").reverse().join(" "); }',
             'alwaysTest': ["Hello world!", "JustOneWord", "One Two Three Four Five"],
