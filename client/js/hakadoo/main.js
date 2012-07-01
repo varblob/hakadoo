@@ -90,8 +90,6 @@ $(document).ready(function() {
 		theme: 'night'
 	});
 	
-	$('#challenge_text').text(question.question);
-	
 	$('#compile_button').click(function(){
 		compileHandler();
     });
@@ -163,6 +161,9 @@ $(document).ready(function() {
 	});
 	
 	socket.on('ready', function(data){
+
+    // Set challenge text
+  	$('#challenge_text').text(question.question);
 
     // Set up VS box
     var opponent = data.opponent;
