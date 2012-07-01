@@ -166,6 +166,11 @@ h1.title{
     text-align: center;
 }
 
+#vs_box {
+  position: absolute;
+  margin-bottom: 120px;
+}
+
 /* classes */
 
 .attack_button {
@@ -176,8 +181,18 @@ h1.title{
     background-color: silver;
 }
 
+.user_box {
+  display: inline-block;
+  width: 240px;
+}
+
+.avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 999px;
+  border: 1px solid red;
+}
+
 .link {
     cursor: pointer;
 }
-
-

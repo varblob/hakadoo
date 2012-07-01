@@ -1,5 +1,7 @@
 body {
   background: #DCDCDC url('/img/gradient.png') repeat-x;
+  border-top: 8px solid #565656;
+  margin: 0;
 }
 
 #bubble {
@@ -32,11 +34,12 @@ a {
   text-shadow: 2px 2px rgba(255,255,255,0.4);
   font-family: 'Wire One', sans-serif;
   font-size: 4em;
-  margin-top: 55px;
+  margin-top: 85px;
 }
 
 #centered h2 {
   text-align: center;
   color: white;
   opacity: .8;
+  margin-top: -30px;
 }

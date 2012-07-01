@@ -1,29 +1,9 @@
 $(document).ready(function() {
 	'use strict';
 
-    //pad timer with zeros
-    var lpad = function(value, padding) {
-        var zeroes = "0";
-
-        for (var i = 0; i < padding; i++) { zeroes += "0"; }
-
-        return (zeroes + value).slice(padding * -1);
-    }
-    var remaining, elapsed = 0, limit = 300; //amount of time in seconds
-    var timer = setInterval(function() {
-        elapsed++;
-        remaining = limit-elapsed;
-        $("#timer").html(function() { //display time
-            return lpad(Math.floor(remaining/60), 2) +":"+lpad(remaining-(Math.floor(remaining/60)*60),2);
-        });
-        if (remaining == 0) { //timer finished
-            clearInterval(timer);
-            alert("timer finished");
-        }
-    }, 1000);
-
 	var questionIndex = 1,
 		question = $.hakadoo.questions[questionIndex],
+
 		// Connect to socket.io
 		socket = io.connect(window.Array.host),
 		them = CodeMirror.fromTextArea(document.getElementById("opponent_code"), {
@@ -50,7 +30,9 @@ $(document).ready(function() {
 			
 			try {
 				worked = $.hakadoo.validate(questionIndex, you.getValue());
+				$('#console').append('<li>Congratulations! You win!</li>');
 			} catch(e) {
+        worked = false;
 				$('#console').append('<li>' + e.message + '</li>');
 			}
 			socket.emit('compile', {worked: worked});
@@ -81,6 +63,10 @@ $(document).ready(function() {
 	    	}
 	    };
 	
+  // Read the profile data for this user
+  var user = $.parseJSON($('#page-data').html());
+  socket.emit('introduction', user);
+
 	//initing the ability counts    
 	updateAbilities(abilities, $('#left_buttons'));
 	updateAbilities(opponentAbilities, $('#right_buttons'));
@@ -177,15 +163,46 @@ $(document).ready(function() {
 	});
 	
 	socket.on('ready', function(data){
-		console.log('ready');
+
+    // Set up VS box
+    var opponent = data.opponent;
+    var templateUserBox = function(user, $box) {
+      console.log(user.avatar);
+      $box.find('.avatar').css('background-image', "url('" + user.avatar + "')");
+      $box.find('.username').text(user.name);
+      $box.find('.username').attr('href', 'http://twitter.com/' + user.name);
+    };
+
+    templateUserBox(user, $('#self'));
+    templateUserBox(opponent, $('#opponent'));
+
+    // Handle timer
+    // pad timer with zeros
+    var lpad = function(value, padding) {
+        var zeroes = "0";
+
+        for (var i = 0; i < padding; i++) { zeroes += "0"; }
+
+        return (zeroes + value).slice(padding * -1);
+    }
+    var remaining, elapsed = 0, limit = 300; //amount of time in seconds
+    var timer = setInterval(function() {
+        elapsed++;
+        remaining = limit-elapsed;
+        $("#timer").html(function() { //display time
+            return lpad(Math.floor(remaining/60), 2) +":"+lpad(remaining-(Math.floor(remaining/60)*60),2);
+        });
+        if (remaining == 0) { //timer finished
+            clearInterval(timer);
+            $('#console').append('<li>Time out. You BOTH lose!</li>');
+        }
+    }, 1000);
+
+    // Set up function header
 		you.setValue('function(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
 	});
 	
-	socket.on('compile', function(data){
-		
-	});
-	
-
- 
-   
+	socket.on('lose', function() {
+    $('#console').append('<li>You lose!</li>');
+	});   
 });

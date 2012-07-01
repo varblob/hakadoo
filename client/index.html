@@ -1,81 +1,30 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=windows-1250">
-	<script type="text/javascript" src="js/lib/jquery.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script src="js/lib/codemirror/codemirror.js"></script>
-	<script src="js/lib/codemirror/mode/javascript/javascript.js"></script>
-	<script type="text/javascript" src="js/lib/jquery.hakadoo.js"></script>
-	<script type="text/javascript" src="js/hakadoo/remote.js"></script>
-	<script type="text/javascript" src="js/hakadoo/main.js"></script>
-	
-	<link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="js/lib/codemirror/codemirror.css">
-	<link rel="stylesheet" href="js/lib/codemirror/theme/night.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css" />
-	<title>Hackadoo</title>
-</head>
-<body>
-	<div id="main_container">
-		<div id="top_container">
-			<h1 class="title">Hackadoo</h1>
-			
-			<div id="top_section">
-				<div id="challenge_text">
-					Challenge:
-				</div>
-				<div id="timer">
-					00:00:00
-				</div>
-			</div>
-		</div>
-		<div id="left_container" class="clearfix">
-			<div id="left_buttons" class="buttons">
-				<button class="attack_button remove">
-					<div class="label">nuke</div>
-					<div class="count">-</div>
-				</button>
-				<button class="attack_button swap">
-					<div class="label">swap</div>
-					<div class="count">-</div>
-				</button>
-				<button class="attack_button peek">
-					<div class="label">reveal</div>
-					<div class="count">-</div>
-				</button>
-			</div>
-			<div id="left_section">
-				<textarea id="user_code"></textarea>
-			</div>
-		</div>
-		<div id="right_container" class="clearfix">
-			<div id="right_buttons" class="buttons">
-				<button class="attack_button remove">
-					<div class="label">nuke</div>
-					<div class="count">-</div>
-				</button>
-				<button class="attack_button swap">
-					<div class="label">swap</div>
-					<div class="count">-</div>
-				</button>
-				<button class="attack_button peek">
-					<div class="label">reveal</div>
-					<div class="count">-</div>
-				</button>
-			</div>
-			<div id="right_section">
-				<textarea id="opponent_code"></textarea>
-			</div>
-		</div>
-		
-		<div id="bottom_container">
-			<div id="bottom_section">
-				<div id="compile_button">Compile</div>
-				<ol id="console"></ol>
-			</div>
-		</div>
-		
-	</div>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hackadoo</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#centered')
+          .mouseenter(function() { 
+            $(this).css('background-color', '#224A7C'); 
+          })
+          .mouseleave(function() {
+             $(this).css('background-color', '#133969'); 
+          });
+      });
+    </script>
+    <link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="css/landing.css"/>
+  </head>
+  <body>
+    <div id="centered">
+      <a href="/login">
+        <div id="bubble">
+          <h1>Hackadoo</h1> 
+          <h2>Sign in with Twitter</h2>
+        </div>
+      </a>
+    </div>
+  </body>
 </html>

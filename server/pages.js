@@ -10,7 +10,7 @@ exports.battle = function() {
   this.res.end(exports.pages['battle.html']);
 }
 
-var callback = 'http://localhost:8888/callback';
+var callback = 'http://33.33.33.10:8888/callback';
 
 // Twitter OAuth
 var oa = new OAuth(
@@ -43,6 +43,8 @@ exports.login = function() {
     var redirTo = 'https://twitter.com/oauth/authenticate?' + querystring.stringify({
       oauth_token: oauth_token
     , oauth_callback: callback
+    , force_login: 'true'
+    , screen_name: ''
     });  
 
     self.res.writeHead(302, {'Location': redirTo});
@@ -57,6 +59,8 @@ exports.callback = function() {
   var self = this;
   var session = this.req.session;
 
+  console.log('+++', session);
+
   if (!session.oauth) {
     return self.res.end('Authorization failed.');
   }
@@ -67,12 +71,12 @@ exports.callback = function() {
   oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier, 
     function(err, oauth_access_token, oauth_access_token_secret, results) {
 
-    var screen_name = results.screen_name;
-
     if (err) {
       console.log(err);
       return self.res.end('Authorization failed.');
     }
+
+    var screen_name = results.screen_name;
 
     oauth.access_token = oauth_access_token;
     oauth.access_token_secret = oauth_access_token_secret;
