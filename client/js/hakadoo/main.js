@@ -9,7 +9,8 @@ $(document).ready(function() {
 		them = CodeMirror.fromTextArea(document.getElementById("opponent_code"), {
 			lineNumbers: true,
 			matchBrackets: true,
-			theme: 'night'
+			theme: 'night',
+			readOnly: 'nocursor'
 		}),
 		abilities = {
 			remove: 3,
@@ -87,7 +88,8 @@ $(document).ready(function() {
 			socket.emit('textEntered', {text: text});
 		},
 		keyMap: 'hakadoo',
-		theme: 'night'
+		theme: 'night',
+		autofocus: true
 	});
 	
 	$('#compile_button').click(function(){

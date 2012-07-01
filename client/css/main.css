@@ -1,3 +1,6 @@
+button, .button{
+	cursor:pointer;
+}
 body {
   background: #DCDCDC url('/img/gradient.png') repeat-x;
   padding:0;
@@ -78,21 +81,32 @@ h1.title{
 }
 
 #compile_button {
-    width: 100px;
-    top: 5px;
-    background-color: #cec;
-    margin: auto;
+    width:200px;
+	margin:0 auto;
     text-align: center;
-    padding: 5;
+    font-size: 40px;
+    font-weight: bolder;
+    color:black;
+    background:white;
+    position:relative;
+    bottom:43px;
+    padding:30px 20px 10px;
+    border-radius:30px;
+    z-index: -1;
 }
 
 #console {
-    width: 100%;
+	width:auto;
     height: 48px;
-    top: 10px;
+    margin-top:-18px;
     border: 1px dashed red;
     text-align: left;
-    padding: 5;
+    padding: 5px;
+    background:white;
+}
+
+#console li{
+	color:red;
 }
 
 #timer {
@@ -101,6 +115,12 @@ h1.title{
     text-align: center;
     font-size: 40px;
     font-weight: bolder;
+    color:black;
+    background:white;
+    position:relative;
+    top:43px;
+    padding:10px 20px 30px;
+    border-radius:30px;
 }
 
 #challenge_text {
@@ -112,6 +132,28 @@ h1.title{
 	padding:20px;
 	margin:0 auto;
   color: #464646;
+}
+
+
+
+#self, #opponent{
+	width:100px;
+	text-align:center;
+	position:relative;
+	top:20px;
+}
+
+a{
+	color:#133969;
+	text-decoration: none;
+}
+
+#self{
+	float:left;
+}
+
+#opponent{
+	float:right;
 }
 
 /* containers (contain sections) */
@@ -130,25 +172,12 @@ h1.title{
     width: 100%;
 }
 
-#left_container {
-    top: 150px;
-    left: 80px;
-    bottom: 100px;
-    right: 50%;
-}
-
-#right_container {
-    top: 150px;
-    left: 50%;
-    bottom: 100px;
-    right: 80px;
-}
-
 #bottom_container {
-    height: 100px;
-    bottom: 0px;
-    left: 0px;
-    width: 100%;
+	
+}
+
+.clear{
+	clear:both;
 }
 
 #left_buttons {
@@ -192,6 +221,7 @@ h1.title{
   width: 68px;
   height: 68px;
   border-radius: 999px;
+  margin: 0 auto;
 }
 
 .link {
