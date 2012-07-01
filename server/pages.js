@@ -10,7 +10,7 @@ exports.battle = function() {
   this.res.end(exports.pages['battle.html']);
 }
 
-var callback = 'http://33.33.33.10:8888/callback';
+var callback = 'http://localhost:8888/callback';
 
 // Twitter OAuth
 var oa = new OAuth(
@@ -60,7 +60,8 @@ exports.callback = function() {
   var session = this.req.session;
 
   if (!session.oauth) {
-    return self.res.end('Authorization failed.');
+    writeBattle(self, 'Player', 'http://a0.twimg.com/sticky/default_profile_images/default_profile_6_bigger.png'); 
+    return;
   }
 
   var oauth = session.oauth;
