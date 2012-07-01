@@ -147,7 +147,7 @@ $(document).ready(function() {'use strict';
     templateUserBox(opponent, $('#opponent'));
 
     // Set up function header
-    you.setValue('function run(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
+    you.setValue('function(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
 
     function templateUserBox(user, $box) {
       console.log(user.avatar);
@@ -183,7 +183,7 @@ $(document).ready(function() {'use strict';
       $('#console').append('<li>Congratulations! You win!</li>');
     } catch(e) {
       worked = false;
-      $('#console').append('<li>' + e.message + '</li>');
+      $('#console').prepend('<li>' + e.message + '</li>');
     }
     socket.emit('compile', {
       worked: worked

@@ -18,6 +18,8 @@ body {
 .buttons {
   margin-top: 80px;
   background: white;
+  width: 80px;
+  text-align: center;
 }
 
 .buttons button {
@@ -68,15 +70,11 @@ h1.title {
   width: 50%;
 }
 
-#right_buttons, #left_buttons {
-  width: 100px;
-}
-
-#right_buttons {
+#right_container .buttons {
   float: right;
 }
 
-#left_buttons {
+#left_container .buttons {
   float: left;
 }
 
@@ -97,9 +95,8 @@ h1.title {
 
 #console {
   width: auto;
-  height: 48px;
-  margin-top: -18px;
-  border: 1px dashed red;
+  height: 100px;
+  margin: -18px 0 0;
   text-align: left;
   padding: 5px;
   background: white;
@@ -176,28 +173,11 @@ a {
   clear: both;
 }
 
-#left_buttons {
-  top: 150px;
-  left: 0px;
-  bottom: 100px;
-  width: 80px;
-  text-align: center;
-}
-
-#right_buttons {
-  top: 150px;
-  right: 0px;
-  bottom: 100px;
-  width: 80px;
-  text-align: center;
-}
 
 #vs_box {
   position: absolute;
   margin-bottom: 120px;
 }
-
-/* classes */
 
 .attack_button {
   width: 50px;
