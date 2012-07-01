@@ -1,18 +1,15 @@
-var fs = require('fs')
-  , querystring = require('querystring')
+/*
+ * This page contains the routes for logging in via Twitter. Namely, it 
+ * contains a route for initializing the OAuth protocol and a route for the 
+ * OAuth callback.
+ */
+var querystring = require('querystring')
   , http = require('http')
   , async = require('async')
   , OAuth = require('oauth').OAuth;
 
-// Battle test page
-exports.battle = function() {
-  this.res.writeHead(200, {'Content-Type': 'text/html'});
-  this.res.end(exports.pages['battle.html']);
-}
-
-var callback = 'http://localhost:8888/callback';
-
 // Twitter OAuth
+var callback = 'http://localhost:8888/callback';
 var oa = new OAuth(
   'https://api.twitter.com/oauth/request_token'
 , 'https://api.twitter.com/oauth/access_token'
@@ -24,60 +21,53 @@ var oa = new OAuth(
 );
 
 // Initiate the OAuth handshake
-exports.login = function() {
+exports.initiate = function() {
   var self = this;
- 
-  oa.getOAuthRequestToken(function(err, oauth_token, oauth_token_secret, results) { 
+
+  oa.getOAuthRequestToken(function(err, oauth_token, oauth_token_secret, results) {
+    var redirTo;
+
     if (err) {
-      console.log(err);
-      return self.res.end('Authorization failed.');
+      return self.error();
     }
 
-    var session = self.req.session;
-
-    session.oauth  = {
+    self.req.session.oauth = {
       token: oauth_token
     , token_secret: oauth_token_secret
     };
 
-    var redirTo = 'https://twitter.com/oauth/authenticate?' + querystring.stringify({
+    redirTo = 'https://twitter.com/oauth/authenticate?' + querystring.stringify({
       oauth_token: oauth_token
     , oauth_callback: callback
     , force_login: 'true'
     , screen_name: ''
     });  
 
-    self.res.writeHead(302, {'Location': redirTo});
-    self.req.connection = {encrypted: false};
-    self.res.emit('header');
-    self.res.end();
+    self.redirect(redirTo);
   });
 };
 
 // Complete the OAuth handshake
 exports.callback = function() {
-  var self = this;
-  var session = this.req.session;
+  var self = this
+    , session = self.req.session
+    , oauth;
 
   if (!session.oauth) {
-    writeBattle(self, 'Player', 'http://a0.twimg.com/sticky/default_profile_images/default_profile_6_bigger.png'); 
-    return;
+    return self.error();
   }
 
-  var oauth = session.oauth;
+  oauth = session.oauth;
   oauth.verifier = self.req.query.oauth_verifier;
 
   oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier, 
     function(err, oauth_access_token, oauth_access_token_secret, results) {
+    var screenName = results.screen_name;
 
     // Hack to deal with mysterious OAuth error...
     if (err) {
-      console.log(err);
-      writeBattle(self, 'Player', 'http://a0.twimg.com/sticky/default_profile_images/default_profile_6_bigger.png'); 
-      return;
+      return self.error();
     }
-
-    var screen_name = results.screen_name;
 
     oauth.access_token = oauth_access_token;
     oauth.access_token_secret = oauth_access_token_secret;
@@ -88,30 +78,19 @@ exports.callback = function() {
       host: 'api.twitter.com'
     , port: 80
     , path: '/1/users/profile_image?' + querystring.stringify({
-        screen_name: screen_name
+        screen_name: screenName
       , size: 'bigger'
       })
     };
 
     http.get(profileImage, function(res) {
-      var avatar = res.headers.location;
-      writeBattle(self, screen_name, avatar);
+      session.avatar = res.headers.location;
+      session.name = screenName;
+      self.redirect('/battle.html');
     });
   });
 };
 
-function writeBattle(self, screen_name, avatar) {
-
-  self.res.writeHead(200, {'Content-Type': 'text/html'});
-
-  var battleHTML = exports.pages['battle.html'];
-  battleHTML = battleHTML.replace('{{JSON}}', JSON.stringify({
-    name: screen_name
-  , avatar: avatar
-  }));
-
-  self.res.end(battleHTML);
-}
 
 /*
  * Returns a mapping of filename to HTML contents for all files in a given path

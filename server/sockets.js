@@ -6,19 +6,18 @@ var socketIO = require('socket.io')
 exports.single = null;
 
 exports.startListening = function() {
-
   var io = socketIO.listen(app.server);
-  console.log('Listening', app.server);
 
   io.sockets.on('connection', function(socket) { 
     socket.on('introduction', function(user) {
-   
+      var partner, players;
+
       socket.hakadoo = user;
 
       // A partner is already waiting
       if (exports.single) {
-        var partner = exports.single;
-        var players = [socket, partner];
+        partner = exports.single;
+        players = [socket, partner];
         exports.single = null;
     
         // Battle logic...

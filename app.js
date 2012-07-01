@@ -1,29 +1,39 @@
 var flatiron = require('flatiron')
   , app = flatiron.app
-  , path = require('path')
   , connect = require('connect')
   , resourceful = require('resourceful-mongo')
-  , async = require('async')
   , director = require('director')
-  , routes = require('./server/routingTable')
-  , pages = require('./server/pages')
+  , routes = require('./server/rest')
   , ecstatic = require('ecstatic')
   , io = require('./server/sockets')
+  , hu = require('./server/util/http')
   ;
 
 // Middleware stack
 app.use(flatiron.plugins.http);
 app.http.before = [
-  connect.cookieParser('secret'),
-  connect.cookieSession({
+
+  // Prepend the /html/ folder to all requests for .html files.
+  function(req, res, next) {
+    var url = req.url
+      , ext = url.substring(~(~url.lastIndexOf('.') || ~url.length) + 1);
+    
+    if (ext === 'html') {
+      req.url = '/html' + url;
+    }
+
+    next();
+  }
+, connect.cookieParser('secret')
+, connect.cookieSession({
     cookie: { domain: 'localhost' }
-  }),
-  ecstatic(__dirname + '/client')
+  })
+, ecstatic(__dirname + '/client')
 ];
 
 // MongoDB
 resourceful.use('mongodb', {
-  uri: 'mongodb://localhost/hakadoo'
+  uri: 'mongodb://localhost/hackadoo'
 , onConnect: function() {
 
     // Set up routing table
@@ -33,17 +43,22 @@ resourceful.use('mongodb', {
     , strict: false
     , async: true
     });
- 
-    // Read static files to memory
-    pages.getHTMLFiles('./client/html', function(err, contents) {
 
-      // Start the app
-      app.start(8888);
-
-      // Start socket.io
-      io.startListening();
-
-      console.log('OK!');
+    // Attach HTTP utilities to route context
+    app.router.attach(function() {
+      var self = this;
+      Object.keys(hu).forEach(function(name) {
+        self[name] = hu[name];
+      });
     });
+
+    // Start the app
+    app.start(8888);
+
+    // Start socket.io
+    io.startListening();
+
+    // Everything started up fine
+    console.log('OK!');
   }
 });
