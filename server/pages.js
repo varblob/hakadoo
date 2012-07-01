@@ -59,8 +59,6 @@ exports.callback = function() {
   var self = this;
   var session = this.req.session;
 
-  console.log('+++', session);
-
   if (!session.oauth) {
     return self.res.end('Authorization failed.');
   }
@@ -71,9 +69,11 @@ exports.callback = function() {
   oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier, 
     function(err, oauth_access_token, oauth_access_token_secret, results) {
 
+    // Hack to deal with mysterious OAuth error...
     if (err) {
       console.log(err);
-      return self.res.end('Authorization failed.');
+      writeBattle(self, 'Player', 'http://a0.twimg.com/sticky/default_profile_images/default_profile_6_bigger.png'); 
+      return;
     }
 
     var screen_name = results.screen_name;
@@ -94,19 +94,23 @@ exports.callback = function() {
 
     http.get(profileImage, function(res) {
       var avatar = res.headers.location;
-
-      self.res.writeHead(200, {'Content-Type': 'text/html'});
-
-      var battleHTML = exports.pages['battle.html'];
-      battleHTML = battleHTML.replace('{{JSON}}', JSON.stringify({
-        name: screen_name
-      , avatar: avatar
-      }));
-
-      self.res.end(battleHTML);
+      writeBattle(self, screen_name, avatar);
     });
   });
 };
+
+function writeBattle(self, screen_name, avatar) {
+
+  self.res.writeHead(200, {'Content-Type': 'text/html'});
+
+  var battleHTML = exports.pages['battle.html'];
+  battleHTML = battleHTML.replace('{{JSON}}', JSON.stringify({
+    name: screen_name
+  , avatar: avatar
+  }));
+
+  self.res.end(battleHTML);
+}
 
 /*
  * Returns a mapping of filename to HTML contents for all files in a given path
