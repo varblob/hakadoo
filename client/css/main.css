@@ -79,11 +79,11 @@ h1.title{
 
 #compile_button {
     width: 100px;
-    top: 5px;
-    background-color: #cec;
+    background:orange;
     margin: auto;
     text-align: center;
-    padding: 5;
+    padding: 5px;
+    color:#0000CC;
 }
 
 #console {
@@ -101,6 +101,12 @@ h1.title{
     text-align: center;
     font-size: 40px;
     font-weight: bolder;
+    color:black;
+    background:white;
+    position:relative;
+    top:43px;
+    padding:10px 20px 30px;
+    border-radius:30px;
 }
 
 #challenge_text {
@@ -111,6 +117,19 @@ h1.title{
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 	padding:20px;
 	margin:0 auto;    
+}
+
+#self{
+	float:left;
+	width:200px;
+	text-align:center;
+	
+}
+
+#opponent{
+	float:right;
+	width:200px;
+	text-align:center;
 }
 
 /* containers (contain sections) */
@@ -129,25 +148,12 @@ h1.title{
     width: 100%;
 }
 
-#left_container {
-    top: 150px;
-    left: 80px;
-    bottom: 100px;
-    right: 50%;
-}
-
-#right_container {
-    top: 150px;
-    left: 50%;
-    bottom: 100px;
-    right: 80px;
-}
-
 #bottom_container {
-    height: 100px;
-    bottom: 0px;
-    left: 0px;
-    width: 100%;
+	
+}
+
+.clear{
+	clear:both;
 }
 
 #left_buttons {

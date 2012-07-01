@@ -26,60 +26,61 @@
 				<div id="challenge_text">
 					Challenge:
 				</div>
-				<div id="timer">
-					00:00:00
+				<div>
+					<div id="self">
+				      <div class="avatar"></div>
+				      <a class="username"></a>
+				    </div>
+					<div id="timer">
+						00:00:00
+					</div>
+					<div id="opponent">
+				      <div class="avatar"></div>
+				      <a class="username"></a>
+				    </div>
+			    </div> 
+			</div>
+		</div>
+		<div class="clearfix">
+			<div id="left_container" class="clearfix">
+				<div id="left_buttons" class="buttons">
+					<button class="attack_button remove">
+						<div class="label">nuke</div>
+						<div class="count">-</div>
+					</button>
+					<button class="attack_button swap">
+						<div class="label">swap</div>
+						<div class="count">-</div>
+					</button>
+					<button class="attack_button peek">
+						<div class="label">reveal</div>
+						<div class="count">-</div>
+					</button>
+				</div>
+				<div id="left_section">
+					<textarea id="user_code"></textarea>
 				</div>
 			</div>
-			<div id="vs_box">
-				 <div id="self">
-			      <div class="avatar"></div>
-			      <a class="username"></a>
-			    </div>
-			    <div id="opponent">
-			      <div class="avatar"></div>
-			      <a class="username"></a>
-			    </div> 
-  			</div>
-		</div>
-		<div id="left_container" class="clearfix">
-			<div id="left_buttons" class="buttons">
-				<button class="attack_button remove">
-					<div class="label">nuke</div>
-					<div class="count">-</div>
-				</button>
-				<button class="attack_button swap">
-					<div class="label">swap</div>
-					<div class="count">-</div>
-				</button>
-				<button class="attack_button peek">
-					<div class="label">reveal</div>
-					<div class="count">-</div>
-				</button>
-			</div>
-			<div id="left_section">
-				<textarea id="user_code"></textarea>
+			<div id="right_container" class="clearfix">
+				<div id="right_buttons" class="buttons">
+					<button class="attack_button remove">
+						<div class="label">nuke</div>
+						<div class="count">-</div>
+					</button>
+					<button class="attack_button swap">
+						<div class="label">swap</div>
+						<div class="count">-</div>
+					</button>
+					<button class="attack_button peek">
+						<div class="label">reveal</div>
+						<div class="count">-</div>
+					</button>
+				</div>
+				<div id="right_section">
+					<textarea id="opponent_code"></textarea>
+				</div>
 			</div>
 		</div>
-		<div id="right_container" class="clearfix">
-			<div id="right_buttons" class="buttons">
-				<button class="attack_button remove">
-					<div class="label">nuke</div>
-					<div class="count">-</div>
-				</button>
-				<button class="attack_button swap">
-					<div class="label">swap</div>
-					<div class="count">-</div>
-				</button>
-				<button class="attack_button peek">
-					<div class="label">reveal</div>
-					<div class="count">-</div>
-				</button>
-			</div>
-			<div id="right_section">
-				<textarea id="opponent_code"></textarea>
-			</div>
-		</div>
-		
 		<div id="bottom_container">
 			<div id="bottom_section">
 				<div id="compile_button">Compile</div>
