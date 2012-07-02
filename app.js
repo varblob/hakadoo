@@ -10,6 +10,8 @@ var flatiron = require('flatiron')
   ;
 
 // Middleware stack
+var MemoryStore = require('connect/lib/middleware/session/memory');
+app.store = new MemoryStore
 app.use(flatiron.plugins.http);
 app.http.before = [
 
@@ -26,7 +28,10 @@ app.http.before = [
   }
 , connect.cookieParser('secret')
 , connect.cookieSession({
-    cookie: { domain: 'localhost' }
+    cookie: { 
+      domain: 'localhost' 
+    , store: app.store
+    }
   })
 , ecstatic(__dirname + '/client')
 ];

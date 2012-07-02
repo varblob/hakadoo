@@ -1,4 +1,5 @@
 var socketIO = require('socket.io')
+  , connect = require('connect')
   , flatiron = require('flatiron')
   , app = flatiron.app;
 
@@ -6,9 +7,21 @@ var socketIO = require('socket.io')
 exports.single = null;
 
 exports.startListening = function() {
+
   var io = socketIO.listen(app.server);
 
-  io.sockets.on('connection', function(socket) { 
+  io.configure(function() {
+    io.set('authorization', function(data, cb) {
+      var cookies = connect.utils.parseCookie(data.headers.cookie) 
+      data.auth = JSON.parse(cookies['connect.sess'].match(/\{.*\}/g)[0]);
+      cb(null, true);
+    });
+  });
+
+  io.on('connection', function(socket, session) {
+
+    console.log(socket.handshake.auth);
+
     socket.on('introduction', function(user) {
       var partner, players;
 

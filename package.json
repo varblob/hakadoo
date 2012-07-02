@@ -10,7 +10,6 @@
     "oauth": "0.9.x",
     "async": "0.1.x",
     "mkdirp": "0.3.x",
-    "moment": "1.6.x",
     "socket.io": "0.9.x",
     "connect": "2.3.0",
     "director": "https://github.com/flatiron/director/tarball/master",
