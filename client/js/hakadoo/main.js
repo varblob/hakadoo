@@ -139,7 +139,7 @@ $(document).ready(function() {'use strict';
       });
       if(remaining === 0) {//timer finished
         clearInterval(timer);
-        $('#console').append('<li class="positive">Time out. You BOTH lose!</li>');
+        $('#console').prepend('<li>Time out. You BOTH lose!</li>');
       }
     }, 1000);
     
@@ -175,7 +175,7 @@ $(document).ready(function() {'use strict';
   });
 
   socket.on('lose', function() {
-    $('#console').append('<li>You lose!</li>');
+    $('#console').prepend('<li>You lose!</li>');
   });
 
   function compileHandler() {
@@ -184,7 +184,7 @@ $(document).ready(function() {'use strict';
 
     try {
       worked = $.hakadoo.validate(questionIndex, you.getValue());
-      $('#console').append('<li>Congratulations! You win!</li>');
+      $('#console').prepend('<li class="positive">Congratulations! You win!</li>');
     } catch(e) {
       worked = false;
       $('#console').prepend('<li>' + e.message + '</li>');
