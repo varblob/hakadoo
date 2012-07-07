@@ -11,21 +11,29 @@ var flatiron = require('flatiron')
   , middleware = require('./server/util/middleware')
   ;
 
+// Configuration
+config
+  .env()
+  .file({
+    file: './config/global.json'
+  });
 
+var env = config.get('NODE_ENV')
+config.file('env', './config/' + env + '.json');
+config.set('root', __dirname + '/server');
 
 // Middleware
-var MemoryStore = require('connect/lib/middleware/session/memory');
-app.store = new MemoryStore
+app.store = new require('connect/lib/middleware/session/memory');
 app.use(flatiron.plugins.http);
 app.http.before = [
-  middleware.pageRewrite
-, connect.cookieParser('secret')
+  connect.cookieParser('secret')
 , connect.cookieSession({
     cookie: { 
       domain: 'localhost' 
     , store: app.store
     }
   })
+, middleware.pageRewrite
 , ecstatic(__dirname + '/client')
 ];
 
