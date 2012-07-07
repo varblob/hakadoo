@@ -1,5 +1,6 @@
 var flatiron = require('flatiron')
   , app = flatiron.app
+  , config = app.config
   , connect = require('connect')
   , resourceful = require('resourceful-mongo')
   , director = require('director')
@@ -7,25 +8,17 @@ var flatiron = require('flatiron')
   , ecstatic = require('ecstatic')
   , io = require('./server/sockets')
   , hu = require('./server/util/http')
+  , middleware = require('./server/util/middleware')
   ;
+
+
 
 // Middleware
 var MemoryStore = require('connect/lib/middleware/session/memory');
 app.store = new MemoryStore
 app.use(flatiron.plugins.http);
 app.http.before = [
-
-  // Prepend the /html/ folder to all requests for .html files.
-  function(req, res, next) {
-    var url = req.url
-      , ext = url.substring(~(~url.lastIndexOf('.') || ~url.length) + 1);
-    
-    if (ext === 'html') {
-      req.url = '/html' + url;
-    }
-
-    next();
-  }
+  middleware.pageRewrite
 , connect.cookieParser('secret')
 , connect.cookieSession({
     cookie: { 
