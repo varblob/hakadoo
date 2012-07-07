@@ -9,7 +9,7 @@ var flatiron = require('flatiron')
   , hu = require('./server/util/http')
   ;
 
-// Middleware stack
+// Middleware
 var MemoryStore = require('connect/lib/middleware/session/memory');
 app.store = new MemoryStore
 app.use(flatiron.plugins.http);

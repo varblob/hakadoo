@@ -18,30 +18,28 @@ exports.startListening = function() {
     });
   });
 
-  io.on('connection', function(socket, session) {
+  io.on('connection', function(socket) {
 
     console.log(socket.handshake.auth);
 
-    socket.on('introduction', function(user) {
-      var partner, players;
+    var partner, players;
 
-      socket.hakadoo = user;
+    socket.hakadoo = user;
 
-      // A partner is already waiting
-      if (exports.single) {
-        partner = exports.single;
-        players = [socket, partner];
-        exports.single = null;
-    
-        // Battle logic...
-        bindBattleLogic(players);
-    
-      // Otherwise, this is an odd connection. Wait for a partner
-      } else {
-        exports.single = socket;
-        socket.emit('waiting');
-      }
-    });
+    // A partner is already waiting
+    if (exports.single) {
+      partner = exports.single;
+      players = [socket, partner];
+      exports.single = null;
+  
+      // Battle logic...
+      bindBattleLogic(players);
+  
+    // Otherwise, this is an odd connection. Wait for a partner
+    } else {
+      exports.single = socket;
+      socket.emit('waiting');
+    }
   });
 };
 
