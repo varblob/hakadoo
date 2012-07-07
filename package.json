@@ -1,6 +1,6 @@
 {
-  "description": "Hakadoo",
-  "name": "Hakadoo",
+  "description": "A competitive, realtime coding game",
+  "name": "Hackadoo",
   "version": "0.0.0",
   "private": false,
   "dependencies": {
