@@ -1,0 +1,6 @@
+{
+  "port": 8888
+, "mongoURI": "mongodb://localhost/hackadoo"
+, "twitterCallback": "http://localhost:8888/callback"
+, "domain": "localhost"
+}

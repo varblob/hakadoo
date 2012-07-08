@@ -1,0 +1,6 @@
+{
+  "port": 8888
+, "mongoURI": "mongodb://localhost/hackadoo"
+, "twitterCallback": "http://vagrantIP/callback"
+, "domain": "localhost"
+}

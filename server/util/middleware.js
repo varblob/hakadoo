@@ -31,7 +31,7 @@ exports.pageRewrite = function(req, res, next) {
 
   // Check the extension; prepend the /html folder if appropriate
   ext = url.substring(~(~url.lastIndexOf('.') || ~url.length) + 1);
-  firstDir = /(\/.*?)\//.exec(addr)[1];
+  firstDir = /(\/.*?)(\/|$|\?)/.exec(url)[1]; 
 
   if (!ext && !~Object.keys(rest).indexOf(firstDir)) {
     req.url = '/html' + url + '.html';

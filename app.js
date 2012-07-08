@@ -4,23 +4,33 @@ var flatiron = require('flatiron')
   , connect = require('connect')
   , resourceful = require('resourceful-mongo')
   , director = require('director')
-  , routes = require('./server/rest')
   , ecstatic = require('ecstatic')
-  , io = require('./server/sockets')
-  , hu = require('./server/util/http')
-  , middleware = require('./server/util/middleware')
   ;
 
 // Configuration
 config
+  .argv()
   .env()
-  .file({
-    file: './config/global.json'
-  });
+  ;
 
-var env = config.get('NODE_ENV')
-config.file('env', './config/' + env + '.json');
-config.set('root', __dirname + '/server');
+var env = config.get('NODE_ENV') || 'local';
+
+config
+  .file({ 
+    file: './config/config.json' 
+  })
+  .add('env', {
+    type: 'file'
+  , file: './config/environments/' + env + '.json' 
+  })
+  .set('root', __dirname + '/server')
+  ;
+
+// Require local module only after the config options have been set
+var io = require('./server/sockets')
+  , hu = require('./server/util/http')
+  , middleware = require('./server/util/middleware')
+  , routes = require('./server/rest');
 
 // Middleware
 app.store = new require('connect/lib/middleware/session/memory');

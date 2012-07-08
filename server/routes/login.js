@@ -1,30 +1,41 @@
 /*
- * This page contains the routes for logging in via Twitter. Namely, it 
- * contains a route for initializing the OAuth protocol and a route for the 
+ * login.js
+ *
+ * This file contains the routes for logging in via Twitter. Namely, it 
+ * contains a route for initializing the OAuth handshake and a route for the 
  * OAuth callback.
  */
-var querystring = require('querystring')
+
+var config = require('flatiron').app.config
+  , querystring = require('querystring')
   , http = require('http')
   , async = require('async')
-  , OAuth = require('oauth').OAuth;
+  , OAuth = require('oauth').OAuth
 
-// Twitter OAuth
-var callback = 'http://localhost:8888/callback';
-var oa = new OAuth(
-  'https://api.twitter.com/oauth/request_token'
-, 'https://api.twitter.com/oauth/access_token'
-, '3G4VsglLmRDniG3E5gCiRQ'
-, 'BYtLfaGNIGs14adzYvFX9GmmRG9Wgyz2tI8Xw4ZqSsM'
-, '1.0'
-, callback
-, 'HMAC-SHA1'
-);
+  // Twitter OAuth callback URL
+  , callback = config.get('twitterCallback')
 
-// Initiate the OAuth handshake
+  // Twitter OAuth object
+  , oa = new OAuth(
+      'https://api.twitter.com/oauth/request_token'
+    , 'https://api.twitter.com/oauth/access_token'
+    , config.get('twitterToken')
+    , config.get('twitterSecret')
+    , '1.0'
+    , callback
+    , 'HMAC-SHA1'
+  );
+
+/*
+ * Initiate the OAuth handshake
+ */
 exports.initiate = function() {
   var self = this;
 
-  oa.getOAuthRequestToken(function(err, oauth_token, oauth_token_secret, results) {
+  console.log(callback, config.get('twitterToken'), config.get('twitterSecret'))
+
+  oa.getOAuthRequestToken(
+    function(err, oauth_token, oauth_token_secret, results) {
     var redirTo;
 
     if (err) {
@@ -47,7 +58,9 @@ exports.initiate = function() {
   });
 };
 
-// Complete the OAuth handshake
+/*
+ * Complete the OAuth handshake and retrieve the needed user profile information
+ */
 exports.callback = function() {
   var self = this
     , session = self.req.session
@@ -62,9 +75,9 @@ exports.callback = function() {
 
   oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier, 
     function(err, oauth_access_token, oauth_access_token_secret, results) {
-    var screenName = results.screen_name;
+    var screenName = results.screen_name
+      , profileImage;
 
-    // Hack to deal with mysterious OAuth error...
     if (err) {
       return self.error();
     }
@@ -74,7 +87,7 @@ exports.callback = function() {
 
     // Now that the user has authenticated, query twitter for the username,
     // profile picture, and profile URL
-    var profileImage = {
+    profileImage = {
       host: 'api.twitter.com'
     , port: 80
     , path: '/1/users/profile_image?' + querystring.stringify({
@@ -83,42 +96,12 @@ exports.callback = function() {
       })
     };
 
+    // Once the response is received, store the data in the session and 
+    // redirect to the battle page
     http.get(profileImage, function(res) {
       session.avatar = res.headers.location;
       session.name = screenName;
-      self.redirect('/battle.html');
+      self.redirect('/battle');
     });
   });
 };
-
-
-/*
- * Returns a mapping of filename to HTML contents for all files in a given path
- * @param (String) path
- * @callback (Object) 
- */
-exports.getHTMLFiles = function(path, cb) {
- 
-  fs.readdir(path, function(err, files) {
-    if (err) return cb(err);
-
-    var entries = {};
-
-    async.parallel(files.map(function(file) {
-      return function(cb) {
-        fs.readFile(path + '/' + file, 'utf8', cb)
-      };
-
-    }), function(err, contents) {
-      if (err) return cb(err);
-
-      exports.pages = {};
-
-      files.forEach(function(file, i) {
-        exports.pages[file] = contents[i];
-      });
-
-      return cb(null, exports.pages);
-    });
-  });
-}
