@@ -2,7 +2,7 @@ var socketIO = require('socket.io')
   , connect = require('connect')
   , app = require('flatiron').app
   , config = app.config
-  , Users = require('./models/user')
+  , Users = require('./models/users')
   , Questions = require('./models/questions')
   ;
 
@@ -13,7 +13,7 @@ exports.single = null;
  * This function is called at server start and binds socket.io events with 
  * the appropriate handling functions.
  */
-exports.startListening = function() 
+exports.startListening = function() {
   var io = socketIO.listen(app.server);
 
   // Connect user sessions and sockets.io clients. This attaches the session 
@@ -66,7 +66,7 @@ function bindBattleLogic(players) {
       var opponent = players[i^1];
 
       me.emit('ready', {
-      , me: me.user
+        me: me.user
       , opponent: opponent.user
       , question: question
       });
