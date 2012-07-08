@@ -10,6 +10,8 @@ exports.startListening = function() {
 
   var io = socketIO.listen(app.server);
 
+  /* Note: commenting out on master to avoid blocking client-side work
+
   io.configure(function() {
     io.set('authorization', function(data, cb) {
       var cookies = connect.utils.parseCookie(data.headers.cookie) 
@@ -20,11 +22,13 @@ exports.startListening = function() {
 
   io.on('connection', function(socket) {
 
-    console.log(socket.handshake.auth);
+    var auth = socket.handshake.auth;
+
+    console.log(auth);
 
     var partner, players;
 
-    socket.hakadoo = user;
+    socket.hakadoo = auth;
 
     // A partner is already waiting
     if (exports.single) {
@@ -41,6 +45,8 @@ exports.startListening = function() {
       socket.emit('waiting');
     }
   });
+
+  */
 };
 
 
