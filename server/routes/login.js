@@ -11,6 +11,7 @@ var config = require('flatiron').app.config
   , http = require('http')
   , async = require('async')
   , OAuth = require('oauth').OAuth
+  , Users = require('../models/users')
 
   // Twitter OAuth callback URL
   , callback = config.get('twitterCallback')
@@ -25,6 +26,7 @@ var config = require('flatiron').app.config
     , callback
     , 'HMAC-SHA1'
   );
+
 
 /*
  * Initiate the OAuth handshake
@@ -58,6 +60,7 @@ exports.initiate = function() {
   });
 };
 
+
 /*
  * Complete the OAuth handshake and retrieve the needed user profile information
  */
@@ -75,7 +78,9 @@ exports.callback = function() {
 
   oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier, 
     function(err, oauth_access_token, oauth_access_token_secret, results) {
+
     var screenName = results.screen_name
+      , twitterID = results.user_id
       , profileImage;
 
     if (err) {
@@ -99,9 +104,49 @@ exports.callback = function() {
     // Once the response is received, store the data in the session and 
     // redirect to the battle page
     http.get(profileImage, function(res) {
-      session.avatar = res.headers.location;
-      session.name = screenName;
-      self.redirect('/battle');
+      var avatar = res.headers.location;
+
+      // Check if this user is new or returning
+      Users.get({twitterID: twitterID}, function(err, user) {
+        if (err) return self.error();
+
+        // Function called at end of both new user and returning user codepaths
+        var proceed = function(err, user) { 
+          if (err) return self.error();
+          
+          session.userID = user._id;
+          self.redirect('/battle');
+        };
+
+        // Returning user
+        if (user._id) {
+
+          // Account for changes to the user's screen name or avatar
+          user.avatar = avatar;
+          user.name = screenName;
+          Users.save(user, proceed);
+
+        // New user
+        } else {
+          Users.create({
+            name: screenName
+          , avatar: avatar
+          , twitterID: twitterID
+
+          }, proceed);
+        }
+      });
     });
   });
+};
+
+
+/*
+ * Destroys a user's session data, thus logging him out
+ */
+exports.logout = function() {
+  var session = this.req.session;
+  delete session.auth;
+  delete session.userID;
+  this.redirect('/');
 };
