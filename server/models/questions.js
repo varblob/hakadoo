@@ -1,8 +1,10 @@
-var resourceful = require('resourceful-mongo');
+var resourceful = require('resourceful-mongo')
+  , config = require('flatiron').app.config
+  ;
 
-var Question = resourceful.define('questions', function () {
+var Question = module.exports = resourceful.define('questions', function() {
   this.use('mongodb', {
-    uri: "mongodb://localhost/databaseName",
+    uri: config.get('mongoURI'),
     collection: "questions",
   });
 
