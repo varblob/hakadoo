@@ -102,6 +102,8 @@ h1.title {
   text-align: left;
   padding: 5px;
   background: white;
+  overflow: scroll;
+  height: 100px;
 }
 
 #console li {
