@@ -1,52 +1,56 @@
 var socketIO = require('socket.io')
   , connect = require('connect')
-  , flatiron = require('flatiron')
-  , app = flatiron.app;
+  , app = require('flatiron').app
+  , config = app.config
+  , Users = require('./models/user')
+  , Questions = require('./models/questions')
+  ;
 
 // The socket connection waiting for a partner
 exports.single = null;
 
-exports.startListening = function() {
-
+/*
+ * This function is called at server start and binds socket.io events with 
+ * the appropriate handling functions.
+ */
+exports.startListening = function() 
   var io = socketIO.listen(app.server);
 
-  /* Note: commenting out on master to avoid blocking client-side work
-
+  // Connect user sessions and sockets.io clients. This attaches the session 
+  // object to the socket.io handshake object
   io.configure(function() {
     io.set('authorization', function(data, cb) {
       var cookies = connect.utils.parseCookie(data.headers.cookie) 
-      data.auth = JSON.parse(cookies['connect.sess'].match(/\{.*\}/g)[0]);
+      data.session = JSON.parse(cookies['connect.sess'].match(/\{.*\}/g)[0]);
       cb(null, true);
     });
   });
 
+  // Client-side initialization
   io.on('connection', function(socket) {
+    var userID = socket.handshake.session.userID;
 
-    var auth = socket.handshake.auth;
+    Users.get(userID, function(err, user) {
+      if (err) return socket.disconnect();
+      var partner;
 
-    console.log(auth);
+      socket.user = user;
 
-    var partner, players;
-
-    socket.hakadoo = auth;
-
-    // A partner is already waiting
-    if (exports.single) {
-      partner = exports.single;
-      players = [socket, partner];
-      exports.single = null;
-  
-      // Battle logic...
-      bindBattleLogic(players);
-  
-    // Otherwise, this is an odd connection. Wait for a partner
-    } else {
-      exports.single = socket;
-      socket.emit('waiting');
-    }
+      // A partner is already waiting
+      if (exports.single) {
+        partner = exports.single;
+        exports.single = null;
+    
+        // Battle logic...
+        bindBattleLogic([socket, partner]);
+    
+      // Otherwise, this is an odd connection. Wait for a partner
+      } else {
+        exports.single = socket;
+        socket.emit('waiting');
+      }
+    });
   });
-
-  */
 };
 
 
@@ -55,38 +59,42 @@ exports.startListening = function() {
  * @param (Array) players
  */ 
 function bindBattleLogic(players) {
-  getRandomQuestion(function(error, question) {
-      if (error) this.res.end();
+  Questions.getRandomQuestion(function(error, question) {
+    if (error) return this.error();
 
-      players.forEach(function(me, i) {
-          var opponent = players[i^1];
+    players.forEach(function(me, i) {
+      var opponent = players[i^1];
 
-          me.emit('ready', {opponent: opponent.hakadoo, question: question});
+      me.emit('ready', {
+      , me: me.user
+      , opponent: opponent.user
+      , question: question
+      });
 
-          // When a player enters text, inform the opponent
-          me.on('textEntered', function(data) {
-            var text = data.text;
-            opponent.emit('textUpdate', { text: text });
-          });
+      // When a player enters text, inform the opponent
+      me.on('textEntered', function(data) {
+        var text = data.text;
+        opponent.emit('textUpdate', { text: text });
+      });
 
-          // For the battle actions, simply relay the command from player to player
-          me.on('remove', function() {
-            opponent.emit('remove', {});
-          });
+      // For the battle actions, simply relay the command from player to player
+      me.on('remove', function() {
+        opponent.emit('remove');
+      });
 
-          me.on('swap', function() {
-            opponent.emit('swap', {});
-          });
+      me.on('swap', function() {
+        opponent.emit('swap');
+      });
 
-          me.on('compile', function(data) {
-            if (data.worked) {
-              opponent.emit('lose', {})
-            }
-          });
+      me.on('compile', function(data) {
+        if (data.worked) {
+          opponent.emit('lose');
+        }
+      });
 
-          me.on('peek', function() {
-            opponent.emit('peek', {});
-          });
-        });
+      me.on('peek', function() {
+        opponent.emit('peek');
+      });
+    });
   });
 }

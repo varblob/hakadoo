@@ -16,7 +16,6 @@ $(document).ready(function() {'use strict';
 			  peek: 5
 			}
 	  // Read the profile data for this user
-	  , user = $.parseJSON($('#page-data').html())
 	  , you
 	  , them
 	  , opponentText;
@@ -130,19 +129,24 @@ $(document).ready(function() {'use strict';
   socket.on('ready', function(data) {
 
     // Set up VS box
-    var opponent = data.opponent, remaining, elapsed = 0, limit = 300//amount of
-    // time in seconds
-    , timer = setInterval(function() {
-      elapsed++;
-      remaining = limit - elapsed;
-      $("#timer").html(function() {//display time
-        return lpad(Math.floor(remaining / 60), 2) + ":" + lpad(remaining - (Math.floor(remaining / 60) * 60), 2);
-      });
-      if(remaining === 0) {//timer finished
-        clearInterval(timer);
-        $('#console').prepend('<li>Time out. You BOTH lose!</li>');
-      }
-    }, 1000);
+    var opponent = data.opponent
+      , user = data.me
+      , remaining
+      , elapsed = 0
+      , limit = 300 //amount of time in seconds
+
+      , timer = setInterval(function() {
+          elapsed++;
+          remaining = limit - elapsed;
+          $("#timer").html(function() { //display time
+            return lpad(Math.floor(remaining / 60), 2) + ":" + lpad(remaining - (Math.floor(remaining / 60) * 60), 2);
+          });
+
+          if (remaining === 0) { //timer finished
+            clearInterval(timer);
+            $('#console').prepend('<li>Time out. You BOTH lose!</li>');
+          }
+        }, 1000);
     
     // setting the challenge text
     $('#challenge_text').text(question.question);
