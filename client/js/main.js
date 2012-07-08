@@ -1,25 +1,27 @@
 $(document).ready(function() {'use strict';
 
-  var questionIndex = 1
-		, question = $.hakadoo.questions[questionIndex]
-	  // Connect to socket.io
-		, socket = io.connect(window.Array.host)
+  var 
+  	// Connect to socket.io
+		socket = io.connect(window.Array.host)
 		// User abilities
-		, abilities = {
-			  remove: 3,
-			  swap: 4,
-			  peek: 5
-			}
-		, opponentAbilities = {
-			  remove: 3,
-			  swap: 4,
-			  peek: 5
-			}
-	  // Read the profile data for this user
-	  , user = $.parseJSON($('#page-data').html())
-	  , you
-	  , them
-	  , opponentText;
+	, abilities = {
+		  remove: 3,
+		  swap: 4,
+		  peek: 5
+		}
+	, opponentAbilities = {
+		  remove: 3,
+		  swap: 4,
+		  peek: 5
+		}
+  // Read the profile data for this user
+  , user = $.parseJSON($('#page-data').html())
+  , you
+  , them
+  , opponentText
+  , question;
+  
+  
 	
   // initializing codemirror hakadoo keyMapping
   CodeMirror.keyMap.hakadoo = {
@@ -130,19 +132,24 @@ $(document).ready(function() {'use strict';
   socket.on('ready', function(data) {
 
     // Set up VS box
-    var opponent = data.opponent, remaining, elapsed = 0, limit = 300//amount of
+    var opponent = data.opponent
+    	, remaining
+    	, elapsed = 0
+    	, limit = 300//amount of
     // time in seconds
-    , timer = setInterval(function() {
-      elapsed++;
-      remaining = limit - elapsed;
-      $("#timer").html(function() {//display time
-        return lpad(Math.floor(remaining / 60), 2) + ":" + lpad(remaining - (Math.floor(remaining / 60) * 60), 2);
-      });
-      if(remaining === 0) {//timer finished
-        clearInterval(timer);
-        $('#console').prepend('<li>Time out. You BOTH lose!</li>');
-      }
-    }, 1000);
+	    , timer = setInterval(function() {
+	      elapsed++;
+	      remaining = limit - elapsed;
+	      $("#timer").html(function() {//display time
+	        return lpad(Math.floor(remaining / 60), 2) + ":" + lpad(remaining - (Math.floor(remaining / 60) * 60), 2);
+	      });
+	      if(remaining === 0) {//timer finished
+	        clearInterval(timer);
+	        $('#console').append('<li class="positive">Time out. You BOTH lose!</li>');
+	      }
+	    }, 1000);
+	  
+	  question = data.question;
     
     // setting the challenge text
     $('#challenge_text').text(question.question);
@@ -178,21 +185,28 @@ $(document).ready(function() {'use strict';
   socket.on('lose', function() {
     $('#console').prepend('<li>You lose!</li>');
   });
+  
+  
+  $.fancybox('<div><h1>Hey you there!</h1> <p>Are you messing with the client code?</p> <p>If so we would like to enlist your help in improving hackadoo.</br>  E-mail us at team@hackadoo.com</p>');
+  socket.on('cheater', function(data){
+		$.fancybox(data.msg);
+  });
 
   function compileHandler() {
-    var worked = false;
+    var worked = false
+    	, outputs;
+    	
     console.log('compile');
 
     try {
-      worked = $.hakadoo.validate(questionIndex, you.getValue());
-      $('#console').prepend('<li class="positive">Congratulations! You win!</li>');
+      outputs = $.hakadoo.validator.generateOutputs(question, you.getValue());
+      socket.emit('compile', {outputs:outputs, worked:true});
     } catch(e) {
-      worked = false;
       $('#console').prepend('<li>' + e.message + '</li>');
-    }
-    socket.emit('compile', {
-      worked: worked
-    });
+      socket.emit('compile', {
+	      worked: false
+	    });
+    }    
   }
 
   function censor(text) {
