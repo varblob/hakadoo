@@ -1,9 +1,8 @@
 $(document).ready(function() {'use strict';
 
-  var questionIndex = 1
-		, question = $.hakadoo.questions[questionIndex]
-	  // Connect to socket.io
-		, socket = io.connect(window.Array.host)
+  var 
+  	// Connect to socket.io
+		socket = io.connect(window.Array.host)
 		// User abilities
 		, abilities = {
 			  remove: 3,
@@ -18,7 +17,8 @@ $(document).ready(function() {'use strict';
 	  // Read the profile data for this user
 	  , you
 	  , them
-	  , opponentText;
+	  , opponentText
+    ;
 	
   // initializing codemirror hakadoo keyMapping
   CodeMirror.keyMap.hakadoo = {
@@ -131,6 +131,7 @@ $(document).ready(function() {'use strict';
     // Set up VS box
     var opponent = data.opponent
       , user = data.me
+      , question = data.question
       , remaining
       , elapsed = 0
       , limit = 300 //amount of time in seconds
@@ -182,21 +183,28 @@ $(document).ready(function() {'use strict';
   socket.on('lose', function() {
     $('#console').prepend('<li>You lose!</li>');
   });
+  
+  
+  $.fancybox('<div><h1>Hey you there!</h1> <p>Are you messing with the client code?</p> <p>If so we would like to enlist your help in improving hackadoo.</br>  E-mail us at team@hackadoo.com</p>');
+  socket.on('cheater', function(data){
+		$.fancybox(data.msg);
+  });
 
   function compileHandler() {
-    var worked = false;
+    var worked = false
+    	, outputs;
+    	
     console.log('compile');
 
     try {
-      worked = $.hakadoo.validate(questionIndex, you.getValue());
-      $('#console').prepend('<li class="positive">Congratulations! You win!</li>');
+      outputs = $.hakadoo.validator.generateOutputs(question, you.getValue());
+      socket.emit('compile', {outputs:outputs, worked:true});
     } catch(e) {
-      worked = false;
       $('#console').prepend('<li>' + e.message + '</li>');
-    }
-    socket.emit('compile', {
-      worked: worked
-    });
+      socket.emit('compile', {
+	      worked: false
+	    });
+    }    
   }
 
   function censor(text) {

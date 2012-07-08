@@ -1,7 +1,9 @@
 var socketIO = require('socket.io')
-  , connect = require('connect')
   , app = require('flatiron').app
   , config = app.config
+  , connect = require('connect')
+  , async = require('async')
+  , oop = require('./util/oop');
   , Users = require('./models/users')
   , Questions = require('./models/questions')
   ;
@@ -59,12 +61,18 @@ exports.startListening = function() {
  * @param (Array) players
  */ 
 function bindBattleLogic(players) {
-  Questions.getRandomQuestion(function(error, question) {
-    if (error) return this.error();
-
+  
+  // Get all the questions 
+  // XXX: If we have boat loads of questions we should probably figure out another way to do this
+	Questions.getQuestions(function(questions){
+		
+		// Pick a random question from the db
+		var currentQuestion = questions[Math.random() * questions.length];
+		 
     players.forEach(function(me, i) {
       var opponent = players[i^1];
-
+      
+      // Ready function sends the current question
       me.emit('ready', {
         me: me.user
       , opponent: opponent.user
@@ -85,11 +93,30 @@ function bindBattleLogic(players) {
       me.on('swap', function() {
         opponent.emit('swap');
       });
-
+      
+      // Handle client compile events
       me.on('compile', function(data) {
-        if (data.worked) {
-          opponent.emit('lose');
+        
+        // If outputs is on the data object that means the client thinks that they all passed
+        // We're just double checking the see if it's true
+        if (data.outputs){
+          currentQuestion.alwaysTest.forEach(function(test, i){
+            if (data.outputs[i] !== currentQuestion.answer(test)) {
+              data.worked = false;
+              me.emit('cheating', {msg:'<div><h1>Hey you there!</h1>'
+                + '<p>Are you messing with the client code?</p>'
+                + '<p>If so we would like to enlist your help in improving hackadoo.</br>'
+                + '  E-mail us at team@hackadoo.com</p>'});
+            }
+          });
         }
+        
+        // TODO: We need to add a second step that sends back some random inputs back to the client
+        // this is so that the client can't just write a bunch of if statements to handle the unit tests
+        
+        
+        // send the compile status to the opponent
+        opponent.emit('compile', {worked:data.worked});
       });
 
       me.on('peek', function() {
