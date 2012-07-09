@@ -186,8 +186,7 @@ $(document).ready(function() {'use strict';
     $('#console').prepend('<li>You lose!</li>');
   });
   
-  
-  $.fancybox('<div><h1>Hey you there!</h1> <p>Are you messing with the client code?</p> <p>If so we would like to enlist your help in improving hackadoo.</br>  E-mail us at team@hackadoo.com</p>');
+  // if they cheat lets get their help in making hackadoo better!
   socket.on('cheater', function(data){
 		$.fancybox(data.msg);
   });

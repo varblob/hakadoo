@@ -71,11 +71,44 @@ module.exports = (function(){
 						} else {
 							result += s[i];
 						}
-					}return result;
+					}
+					return result;
 				}
 	    , alwaysTest: [[1, 2, 3], [3, 5, 13], [1, -13, 2], [13, 13, 2], [-13, 13, 2], [13, 13, 13]]
 	    , randomTest: [[1, 13, 4], [99, -13, 33], [13, -13, 13]]
 	    }
+	    
+	  , {
+	   		question: 'String to array of numbers corresponding to their position within the alphabet, anything not in the alphabet should be ignored.'
+	    , example: '"Bob likes to eat cats!" -> [1, 14, 1, 11, 8, 10, 4, 18, 19, 14, 4, 0, 19, 2, 0, 19, 18]'
+	    , answer: function(s){
+	    	  var i
+	    	  	, ret = [];
+	    	  s = s.toLowerCase();
+	    	  s = s.replace(/[^a-z]/g, '');
+		    	for(i = 0; i<s.length; i++){
+		    		ret.push(s.charCodeAt(i) - 97);
+		    	}
+		    	return ret;
+		    }
+		 	, alwaysTest: ['sthsn sCht.! tAeAc', 'stheu', 'TebuE931[.]-szvwweu= /a=/,.h3904']
+	    }
+	   
+		, {
+		  	question: 'Sum the diagonals in a 2d array and add them together, assume the array is square.'
+		  , example: '[[1,0,1], [0,1,0], [1,0,1]] -> 6'
+		  , answer: function(s){
+					var i, j, sum = 0;
+					
+					for(i=0; i < s.length; i++){
+						j = s[i];
+						sum += j[i] + j[j.length - i -1];
+					}
+					
+					return sum;
+				}
+		  , alwaysTest: [[[1,0,1], [0,1,0], [1,0,1]], [[1,0,0,1], [0,2,2,0], [0,1,1,0], [1,0,0,1]], [[1,3,3,1], [3,2,2,3], [0,1,1,0], [1,9,9,1]], [[1,3,4,3,1], [3,2,5,2,3], [0,1,6,1,0], [1,9,6,9,1], [2,3,3,7,7]]]
+		  }
 	  ];
 	  
 		this.remove();
