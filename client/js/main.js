@@ -20,7 +20,7 @@ $(document).ready(function() {'use strict';
 	  , you
 	  , them
 	  , opponentText
-    ;
+    , question;
 	
   // initializing codemirror hakadoo keyMapping
   CodeMirror.keyMap.hakadoo = {
@@ -131,7 +131,6 @@ $(document).ready(function() {'use strict';
     // Set up VS box
     var opponent = data.opponent
       , user = data.me
-      , question = data.question
       , remaining
       , elapsed = 0
       , limit = 300 //amount of time in seconds
@@ -148,6 +147,9 @@ $(document).ready(function() {'use strict';
             $('#console').prepend('<li>Time out. You BOTH lose!</li>');
           }
         }, 1000);
+    
+    // set the current question
+    question = data.question;
     
     // setting the challenge text
     $('#challenge_text').text(question.question);
@@ -181,12 +183,22 @@ $(document).ready(function() {'use strict';
   });
 
   socket.on('lose', function() {
+  	$.fancybox('<h1>You Lose!</h1>');
     $('#console').prepend('<li>You lose!</li>');
   });
   
   // if they cheat lets get their help in making hackadoo better!
-  socket.on('cheater', function(data){
+  socket.on('cheating', function(data){
 		$.fancybox(data.msg);
+  });
+  
+  socket.on('user:compile', function(data){
+  	if(data.worked){
+  		$.fancybox('<h1>You Win!</h1>');
+  		$('#console').prepend('<li>You Win!</li>');
+  	}else{
+  		$('#console').prepend('<li>Failed to pass unit tests</li>');
+  	}
   });
 
   function compileHandler() {
