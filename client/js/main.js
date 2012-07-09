@@ -188,7 +188,7 @@ $(document).ready(function() {'use strict';
       $('#console').prepend('<li class="positive">Congratulations! You win!</li>');
     } catch(e) {
       worked = false;
-      $('#console').prepend('<li>' + e.message + '</li>');
+      $('#console').prepend('<li>' + e.name + ': ' + e.message + '</li>');
     }
     socket.emit('compile', {
       worked: worked
