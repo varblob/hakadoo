@@ -6,6 +6,7 @@ var Users = module.exports = resourceful.define('users', function() {
   this.use('mongodb', {
     uri: config.get('mongoURI')
   , collection: 'users'
+  , safe: true
   });
 
   // Keep track of user signup date

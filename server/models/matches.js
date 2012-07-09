@@ -6,6 +6,7 @@ var Matches = module.exports = resourceful.define('matches', function() {
   this.use('mongodb', {
     uri: config.get('mongoURI')
   , collection: 'matches'
+  , safe: true
   });
 
   // Keep track of the match time

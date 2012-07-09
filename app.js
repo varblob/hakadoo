@@ -21,7 +21,7 @@ setupConfiguration();
 var io = require('./server/sockets')
   , hu = require('./server/util/http')
   , middleware = require('./server/util/middleware')
-  , routes = require('./server/rest');
+  , routes = require('./server/rest')
 
 // app.http
 setupMiddleware();
@@ -41,7 +41,7 @@ resourceful.use('mongodb', {
     io.startListening();
 
     // Everything started up fine
-    console.log('OK!');
+    console.log('OK!'); 
   }
 });
 

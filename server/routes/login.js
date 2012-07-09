@@ -32,9 +32,7 @@ var config = require('flatiron').app.config
  * Initiate the OAuth handshake
  */
 exports.initiate = function() {
-  var self = this;
-
-  console.log(callback, config.get('twitterToken'), config.get('twitterSecret'))
+  var self = this; 
 
   oa.getOAuthRequestToken(
     function(err, oauth_token, oauth_token_secret, results) {
@@ -114,16 +112,12 @@ exports.callback = function() {
         var proceed = function(err, user) { 
           if (err) return self.error();
          
-          console.log('--*', user);
-
           session.userID = user._id;
           self.redirect('/battle');
         };
 
         // Returning user
         if (user._id) {
-
-          console.log('returning user!', user);
 
           // Account for changes to the user's screen name or avatar
           user.avatar = avatar;
@@ -134,8 +128,6 @@ exports.callback = function() {
 
         // New user
         } else {
-
-          console.log('new user!')
 
           Users.create({
             name: screenName

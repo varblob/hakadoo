@@ -1,8 +1,10 @@
 $(document).ready(function() {'use strict';
 
-  var 
+  var
+
   	// Connect to socket.io
 		socket = io.connect(window.Array.host)
+
 		// User abilities
 		, abilities = {
 			  remove: 3,
@@ -14,7 +16,7 @@ $(document).ready(function() {'use strict';
 			  swap: 4,
 			  peek: 5
 			}
-	  // Read the profile data for this user
+
 	  , you
 	  , them
 	  , opponentText
@@ -27,8 +29,6 @@ $(document).ready(function() {'use strict';
     },
     'fallthrough': ['basic']
   };
-
-  socket.emit('introduction', user);
 
   //initing the ability counts
   updateAbilities(abilities, $('#left_buttons'));
