@@ -1,19 +1,20 @@
 {
-  "description": "A competitive, realtime coding game",
-  "name": "Hackadoo",
-  "version": "0.0.0",
-  "private": false,
-  "dependencies": {
-    "union": "0.1.x",
-    "flatiron": "0.2.x",
-    "resourceful-mongo": "https://github.com/markover/resourceful-mongo/tarball/master",
-    "oauth": "0.9.x",
-    "async": "0.1.x",
-    "mkdirp": "0.3.x",
-    "socket.io": "0.9.x",
-    "connect": "2.3.0",
-    "director": "https://github.com/flatiron/director/tarball/master",
-    "request": "2.9.x",
-    "ecstatic": "0.1.x"
+  "description": "A competitive, realtime coding game"
+, "name": "Hackadoo"
+, "version": "0.0.0"
+, "private": false
+, "dependencies": {
+    "union": "0.1.x"
+  , "flatiron": "0.2.x"
+  , "resourceful-mongo": "https://github.com/markover/resourceful-mongo/tarball/master"
+  , "oauth": "0.9.x"
+  , "async": "0.1.x"
+  , "mkdirp": "0.3.x"
+  , "socket.io": "0.9.x"
+  , "connect": "2.3.0"
+  , "director": "https://github.com/flatiron/director/tarball/master"
+  , "request": "2.9.x"
+  , "ecstatic": "0.1.x"
+  , "set": "0.1.x"
   }
 }
