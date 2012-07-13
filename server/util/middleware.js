@@ -4,7 +4,7 @@
  * This file contains any custom functions that are to be inserted into the 
  * middleware stack.
  */
-var rest = require('../rest')
+var routes = require('../paths').routes
   , indexPage = '/html/index.html'
   , loginPage = '/html/index.html'
   ;
@@ -33,7 +33,7 @@ exports.pageRewrite = function(req, res, next) {
   ext = url.substring(~(~url.lastIndexOf('.') || ~url.length) + 1);
   firstDir = /(\/.*?)(\/|$|\?)/.exec(url)[1]; 
 
-  if (!ext && !~Object.keys(rest).indexOf(firstDir)) {
+  if (!ext && !~Object.keys(routes).indexOf(firstDir)) {
     req.url = '/html' + url + '.html';
   }
 

@@ -1,35 +1,31 @@
-var socketIO = require('socket.io')
-  , app = require('flatiron').app
-  , config = app.config
-  , connect = require('connect')
-  , async = require('async')
-  , oop = require('./util/oop')
-  , questions = require('./questions')
-  , Users = require('./models/users')
+var async = require('async')
+  , set = require('set')
+  , oop = require('../util/oop')
+  , e = require('../util/err').socket
+  , Users = require('../models/users')
   ;
+
+// Users seeking any other challenger
+exports.generalPool = new Set();
+
+module.exports = function(socket) {
+  var userID = socket.handshake.session.userID; 
+  
+  // Retrieve the user information and give it to the client.
+  Users.get(userID, this.e(function(user) { 
+    socket.emit('profile', user);
+  }));
+};
+
+
+
+/*
 
 // The socket connection waiting for a partner
 exports.single = null;
 
-/*
- * This function is called at server start and binds socket.io events with 
- * the appropriate handling functions.
- */
 exports.startListening = function() {
-  var io = socketIO.listen(app.server);
-
-  // Connect user sessions and sockets.io clients. This attaches the session 
-  // object to the socket.io handshake object
-  io.configure(function() {
-    io.set('authorization', function(data, cb) {
-      var cookies = connect.utils.parseCookie(data.headers.cookie) 
-      data.session = JSON.parse(cookies['connect.sess'].match(/\{.*\}/g)[0]);
-      cb(null, true);
-    });
-  });
-
-  // Client-side initialization
-  io.on('connection', function(socket) {
+    
     var userID = socket.handshake.session.userID;
 
     Users.get(userID, function(err, user) {
@@ -56,10 +52,6 @@ exports.startListening = function() {
 };
 
 
-/*
- * Binds the event for handling battle mechanics
- * @param (Array) players
- */ 
 function bindBattleLogic(players) {
   
   // Pick a random question from the db
@@ -119,3 +111,4 @@ function bindBattleLogic(players) {
     });
   });
 }
+*/

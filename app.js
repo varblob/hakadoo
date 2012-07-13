@@ -1,27 +1,30 @@
 /*
  * app.js
  *
- * Entry point for the application's execution. Sets up the databasem the web 
+ * Entry point for the application's execution. Sets up the database, the web 
  * server, and the socket.io listener
  */
 
 var flatiron = require('flatiron')
   , app = flatiron.app
   , config = app.config
+  , url = require('url')
   , connect = require('connect')
-  , resourceful = require('resourceful-mongo')
   , director = require('director')
   , ecstatic = require('ecstatic')
+  , socketIO = require('socket.io')
+  , resourceful = require('resourceful-mongo')
   ;
 
 // app.config
 setupConfiguration();
 
 // Loading any local modules only after nconf has been set up.
-var io = require('./server/sockets')
-  , hu = require('./server/util/http')
+var hu = require('./server/util/http')
   , middleware = require('./server/util/middleware')
-  , routes = require('./server/rest')
+  , error = require('./server/util/error')
+  , paths = require('./server/paths')
+  ;
 
 // app.http
 setupMiddleware();
@@ -32,13 +35,14 @@ setupRouting();
 // Start the database
 resourceful.use('mongodb', {
   uri: config.get('mongoURI')
-, onConnect: function() {
+, onConnect: function(err) {
+    if (err) throw err;
 
     // Start the web server
     app.start(config.get('port'));
 
-    // Start socket.io
-    io.startListening();
+    // Start socket.io listening
+    setupSocketIO();
 
     // Everything started up fine
     console.log('OK!'); 
@@ -96,7 +100,7 @@ function setupMiddleware() {
 function setupRouting() {
 
   // Set up routing table
-  app.router.mount(routes);
+  app.router.mount(paths.routes);
   app.router.configure({ 
     recurse: false
   , strict: false
@@ -109,5 +113,36 @@ function setupRouting() {
     Object.keys(hu).forEach(function(name) {
       self[name] = hu[name];
     });
+  });
+}
+
+
+/*
+ * Start listening for socket.io connections
+ */
+function setupSocketIO() {
+
+  // Start listening
+  var io = socketIO.listen(app.server);
+
+  // Connect user sessions and sockets.io clients. This attaches the session 
+  // object to the socket.io handshake object
+  io.configure(function() {
+    io.set('authorization', function(data, cb) {
+      var cookies = connect.utils.parseCookie(data.headers.cookie);
+      data.session = JSON.parse(cookies['connect.sess'].match(/\{.*\}/g)[0]);
+      data.path = url.parse(data.headers.referer).pathname; 
+      cb(null, true);
+    });
+  });
+
+  // Upon a new connection, bind the appropriate client listeners for the URL
+  // from which the socket.io connection was initialized.
+  io.on('connection', function(socket) {
+    var path = socket.handshake.path;
+    (paths.sockets[path] || function() {}).call({
+      e: error
+    , socket: socket
+    }, socket);
   });
 }

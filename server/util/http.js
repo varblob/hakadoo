@@ -25,3 +25,9 @@ exports.error = function() {
   this.res.writeHead(500);
   this.res.end();
 };
+
+
+/*
+ * Pass-style async error handling (see error.js)
+ */
+exports.e = require('./error');
