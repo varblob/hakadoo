@@ -210,7 +210,7 @@ $(document).ready(function() {'use strict';
     
     // start the timer
     // XXX: this should be a server event
-    setInterval(function() {
+    timer = setInterval(function() {
       gameData.elapsed++;
       gameData.remaining = gameData.limit - gameData.elapsed;
       

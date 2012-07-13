@@ -1,1 +1,1 @@
-jQuery.hakadoo = {};
+jQuery.hackadoo = {};
