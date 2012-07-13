@@ -1,20 +1,25 @@
 $(document).ready(function() {'use strict';
 
   var
-
+		//some containers that are oft used
+		  leftContainer = $('#left_container')
+		, rightContainer = $('#right_container')
+		, leftButtons = leftContainer.find('.buttons')
+		, rightButtons = rightContainer.find('.buttons')
+		
   	// Connect to socket.io
-		socket = io.connect(window.Array.host)
+		, socket = io.connect(window.Array.host)
 
 		// User abilities
 		, abilities = {
-			  remove: 3,
-			  swap: 4,
-			  peek: 5
+			  remove: 1,
+			  swap: 1,
+			  peek: 1
 			}
 		, opponentAbilities = {
-			  remove: 3,
-			  swap: 4,
-			  peek: 5
+			  remove: 1,
+			  swap: 1,
+			  peek: 1
 			}
 
 	  , you
@@ -31,8 +36,8 @@ $(document).ready(function() {'use strict';
   };
 
   //initing the ability counts
-  updateAbilities(abilities, $('#left_buttons'));
-  updateAbilities(opponentAbilities, $('#right_buttons'));
+  updateAbilities(abilities, leftButtons);
+  updateAbilities(opponentAbilities, rightButtons);
 
   //create codeing panels
   you = CodeMirror.fromTextArea(document.getElementById("user_code"), {
@@ -65,20 +70,20 @@ $(document).ready(function() {'use strict';
     compileHandler();
   });
 
-  $('#left_buttons').find('.swap').click(function() {
-    if(useAbility(abilities, 'swap', $('#left_buttons').find('.swap'))) {
+  leftButtons.find('.swap').click(function() {
+    if(useAbility(abilities, 'swap', leftButtons.find('.swap'))) {
       socket.emit('swap');
     }
   });
 
-  $('#left_buttons').find('.remove').click(function() {
-    if(useAbility(abilities, 'remove', $('#left_buttons').find('.remove'))) {
+  leftButtons.find('.remove').click(function() {
+    if(useAbility(abilities, 'remove', leftButtons.find('.remove'))) {
       socket.emit('remove');
     }
   });
 
-  $('#left_buttons').find('.peek').click(function() {
-    if(useAbility(abilities, 'peek', $('#left_buttons').find('.peek'))) {
+  leftButtons.find('.peek').click(function() {
+    if(useAbility(abilities, 'peek', leftButtons.find('.peek'))) {
       them.setValue(opponentText);
       setTimeout(function() {
         them.setValue(censor(opponentText));
@@ -95,24 +100,26 @@ $(document).ready(function() {'use strict';
   // socket event handlers
 
   socket.on('peek', function() {
-    useAbility(opponentAbilities, 'peek', $('#right_buttons').find('.peek'));
+    useAbility(opponentAbilities, 'peek', rightButtons.find('.peek'));
   });
 
   socket.on('swap', function() {
     var text = you.getValue().split(''), swap = Math.floor(Math.random() * text.length - 1), holder = text[swap];
 
-    useAbility(opponentAbilities, 'swap', $('#right_buttons').find('.swap'));
+    useAbility(opponentAbilities, 'swap', rightButtons.find('.swap'));
     text[swap] = text[swap + 1]
     text[swap + 1] = holder;
     you.setValue(text.join(''));
   });
 
   socket.on('remove', function() {
-    var lines = you.getValue().split('\n'), killLine = Math.floor(Math.random() * lines.length), newText = lines.filter(function(line, i) {
-      return i !== killLine;
-    }).join('\n');
+    var lines = you.getValue().split('\n')
+      , killLine = Math.floor(Math.random() * lines.length)
+      , newText = lines.filter(function(line, i) {
+		      return i !== killLine;
+		    }).join('\n');
 
-    useAbility(opponentAbilities, 'remove', $('#right_buttons').find('.remove'));
+    useAbility(opponentAbilities, 'remove', rightButtons.find('.remove'));
     you.setValue(newText);
   });
 
