@@ -28,7 +28,7 @@ h1.title {
 
 .CodeMirror{
     /*border-radius: 10px;*/
-    margin: 20px;
+    margin: 0 20px 20px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     border: 1px solid black;
     background: #133969;
@@ -57,14 +57,17 @@ h1.title {
     width:auto;
     text-align: center;
     font-size: 20px;
-    background: white;
+/*    background: white;*/
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     padding: 20px;
     margin: 0 auto;
-    color: #464646;
+    color: #133969;
+    width:900px;
 }
 
-#timer, #compile_button { border: 1px solid white; }
+#timer, #compile_button { 
+	border: 1px solid white; 
+}
 
 #timer {
     width: 170px;
@@ -72,11 +75,11 @@ h1.title {
     text-align: center;
     font-size: 40px;
     font-weight: bolder;
-    color: black;
-    background: white;
+    color: white;
+    background: #133969;
     position: relative;
-    top: 43px;
-    padding: 5px 20px 30px;
+    top: 20px;
+    padding: 5px 20px;
     border-radius: 50px;
 }
 
@@ -107,22 +110,14 @@ h1.title {
     height: 50px;
     padding: 0px;
     margin: 15px;
-    background-color: silver;
-}
-
-#right_container .buttons {
-    float: right;
-}
-
-#left_container .buttons {
-    float: left;
+    display:inline-block;
 }
 
 .buttons {
-    margin-top: 80px;
     background: white;
-    width: 80px;
     text-align: center;
+    width:auto;
+    width:300px;
 }
 
 .buttons button {
@@ -148,11 +143,6 @@ button, .button, .link {
 
 /* avatars */
 
-#vs_box {
-    position: absolute;
-    margin-bottom: 120px;
-}
-
 .user_box {
     display: inline-block;
     width: 240px;
@@ -161,29 +151,34 @@ button, .button, .link {
 .avatar {
     width: 68px;
     height: 68px;
-    border-radius: 999px;
+    border: 1px #133969 solid;
     margin: 0 auto;
+    background:#A5C4EC;
+   
 }
 
-#self {
-    float: left;
-}
-
-#opponent {
-    float: right;
-}
-
-#self, #opponent {
+.user_info {
     width: 100px;
     text-align: center;
     position: relative;
-    top: 20px;
+    top: -20px;
+    background: #133969;
+    border-radius:8px;
+    padding:20px 0 5px;
+}
+
+.user_info a, .avatar{
+	color: white;
+}
+
+.top{
+	padding: 0 30px;
 }
 
 /* sections & containers (contain sections) */
 
 #main_container {
-
+	min-width:1100px;
 }
 
 #top_container {
@@ -207,18 +202,17 @@ button, .button, .link {
     margin: 0px;
     padding: 0px;
     background-color: white;
-    overflow: hidden;
 }
-
-#right_section, #left_section {
-    margin: 0px;
-    padding: 0px;
-    background-color: white;
-    overflow: hidden;
-}
-
 
 /* misc */
+
+.left{
+	float:left;
+}
+
+.right{
+	float:right;
+}
 
 .clear {
     clear: both;
@@ -230,4 +224,8 @@ button, .button, .link {
     display: block;
     height: 0;
     clear: both;
+}
+
+.flat{
+	height:0;
 }

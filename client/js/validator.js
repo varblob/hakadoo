@@ -1,6 +1,6 @@
 "use strict";
 
-jQuery.hakadoo.validator = ( function($) {
+jQuery.hackadoo.validator = ( function($) {
 
   function _generateOutputs(question, userCode){
     var attempt = eval('(' + userCode + ')')
