@@ -32,6 +32,12 @@ setupMiddleware();
 // app.router
 setupRouting();
 
+// A mapping of user ID to socket client
+app.userIDToSocket = {};
+
+// A mapping of userID to battle state
+app.userIDToBattle = {};
+
 // Start the database
 resourceful.use('mongodb', {
   uri: config.get('mongoURI')
@@ -140,6 +146,16 @@ function setupSocketIO() {
   // from which the socket.io connection was initialized.
   io.on('connection', function(socket) {
     var path = socket.handshake.path;
+    var userID = socket.handshake.session.userID;
+
+    // Associate this connection with its user ID
+    app.userIDToSocket[userID] = socket;
+
+    // Upon disconnect, remove its entry from the lookup
+    socket.on('disconnect', function() {
+      delete app.userIDToSocket[userID];
+    });
+
     (paths.sockets[path] || function() {}).call({
       e: error
     , socket: socket
