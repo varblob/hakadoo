@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <title>Hackadoo</title>
+    <script src="/socket.io/socket.io.js"></script>  
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/lobby.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/landing.css"/>
   </head>
@@ -10,6 +12,7 @@
     <div id="centered">
       <h2>The Lobby</h2>
       <button id="waiting">Battle random user</button>
+      <input id="opponent-name" type="text" />
       <button id="challenge">Invite another user</button>
     </div>
   </body>

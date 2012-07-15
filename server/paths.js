@@ -1,5 +1,6 @@
 var login = require('./routes/login')
-  , battle = require('./sockets/battle');
+  , battle = require('./sockets/battle')
+  , lobby = require('./sockets/lobby');
 
 // HTTP response handlers 
 exports.routes = {
@@ -11,4 +12,5 @@ exports.routes = {
 // Socket.io listeners
 exports.sockets = {
   '/battle': battle
-}
+, '/lobby': lobby
+};

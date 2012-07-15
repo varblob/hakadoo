@@ -21,7 +21,11 @@ $(document).ready(function() {'use strict';
 	  , them
 	  , opponentText
     ;
-	
+
+  socket.on('test', function(data) {
+    console.log('You are fighting', data.opponent);
+  })
+
   // initializing codemirror hakadoo keyMapping
   CodeMirror.keyMap.hakadoo = {
     'Ctrl-Enter': function(cm) {

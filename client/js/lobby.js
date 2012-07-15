@@ -8,8 +8,9 @@ $(document).ready(function() {'use strict';
   });
 
   $('#challenge').click(function() {
-    socket.emit('postChallenge', {
-      opponentName: $('#opponent-name').val();
+     console.log($('#opponent-name').val()) 
+    socket.emit('postChallenge', { 
+      opponentName: $('#opponent-name').val()
     });
   });
 
@@ -19,5 +20,9 @@ $(document).ready(function() {'use strict';
 
   socket.on('battle', function() {
     window.location = '/battle';
+  });
+
+  socket.on('profile', function(user) {
+    console.log('got profile information', user);
   });
 });

@@ -39,5 +39,5 @@ module.exports = function(cb) {
       var args = Array.prototype.slice.call(arguments, 1);
       cb.apply(this, args);
     }
-  }
+  }.bind(this);
 };

@@ -76,14 +76,14 @@ exports.callback = function() {
 
   oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier, 
     function(err, oauth_access_token, oauth_access_token_secret, results) {
+      if (err) {
+        console.log(err);
+        return self.error();
+      }
 
     var screenName = results.screen_name
       , twitterID = results.user_id
       , profileImage;
-
-    if (err) {
-      return self.error();
-    }
 
     oauth.access_token = oauth_access_token;
     oauth.access_token_secret = oauth_access_token_secret;
@@ -113,7 +113,7 @@ exports.callback = function() {
           if (err) return self.error();
          
           session.userID = user._id;
-          self.redirect('/battle');
+          self.redirect('/lobby');
         };
 
         // Returning user

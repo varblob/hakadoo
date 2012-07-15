@@ -90,7 +90,7 @@ function setupMiddleware() {
     connect.cookieParser('secret')
   , connect.cookieSession({
       cookie: { 
-        domain: 'localhost' 
+        domain: config.get('domain')
       , store: app.store
       }
     })
