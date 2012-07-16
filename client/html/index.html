@@ -13,6 +13,37 @@
           .mouseleave(function() {
              $(this).css('background-color', '#133969'); 
           });
+
+        // Quick POC for cursor blink
+        var $cursorBlink = $('.cursor-blink')
+          , hover;
+
+        $('#title')
+          .mouseenter(function() {
+            hover = true;
+            $cursorBlink.addClass('blink-on');
+
+            (function blink() { 
+              setTimeout(function() {
+                console.log('going');
+                if (!hover) return;
+
+                $cursorBlink.each(function() { 
+                  if ($(this).hasClass('blink-on')) {
+                    console.log('yes');
+                    $(this).removeClass('blink-on');
+                  } else {
+                    $(this).addClass('blink-on');         
+                  }
+                });
+                blink();
+              }, 600);
+            })();
+          })
+          .mouseleave(function() {
+            $cursorBlink.removeClass('blink-on');
+            hover = false;
+          });
       });
     </script>
     <link rel="stylesheet" type="text/css" href="css/landing.css"/>
@@ -20,7 +51,7 @@
   <body>
     <div id="top">
       <div id="header" class="center-column">
-        <h1>Hackadoo</h1>
+        <a href="http://hackadoo.com"><h1 id="title">Hackadoo</h1></a><h1 class="cursor-blink">;</h1>
       </div>
     </div>
     <div id="content" class="center-column">
@@ -32,6 +63,16 @@
       </a>
       <div id="call-to-action">
         <h2>Sign in with Twitter</h2>
+        <p>Hackadoo is a realtime, competitive coding game. The objective is to 
+        write a correct solution to a given programming challenge before your 
+        opponent does. In addition to writing code, you'll need to strategically 
+        use power-ups to steal and disrupt your opponent's code.
+        </p>
+
+        <p></p>
+
+        <p>Hackadoo was created at the Meetup.com JavaScipt Hackathon, where it 
+        took first place.</p>
       </div>
     </div>
 
