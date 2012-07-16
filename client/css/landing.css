@@ -1,45 +1,76 @@
 body {
-  background: #DCDCDC url('/img/gradient.png') repeat-x;
-  border-top: 8px solid #565656;
+  background-color: #81AAD0;
   margin: 0;
+}
+
+#sunburst {
+  background: url("/img/sunburst.png") no-repeat scroll 0 0 #81AAD0;
+  height: 515px;
+  margin-left: -630px;
+  margin-top: -40px;
+  position: absolute;
+  width: 1204px;
+  z-index: -1;
+}
+
+#top {
+  background: url("/img/top-ridge.png") repeat-x scroll center bottom #FFF28C;
+  height: 60px;
+}
+
+#top h1 {
+  color: #C7BF86;
+  font-family: 'Dosis';
+  font-size: 2.3em;
+  letter-spacing: 0;
+  margin: 0 0 0 8px;
+  text-shadow: 1px 1px #7A6F2F;
+  text-transform: uppercase;
+}
+
+.center-column {
+  margin-left: auto;
+  margin-right: auto;
+  width: 350px;
 }
 
 #bubble {
-  margin: 0;
-  padding: 0;
-  width: 300px;
-  height: 300px;
-  position: absolute;
-}
-
-#centered {
-  width: 300px;
-  height: 300px;
-  margin-left: auto;
-  margin-right: auto;
+  background-color: #386895;
   border-radius: 999px;
-  background-color: #133969;
-  border: 5px solid #45648C;
-  margin-top: 100px;
+  box-shadow: 0 0 10px white;
+  height: 70px;
+  margin-left: -70px;
+  margin-top: 30px;
+  position: absolute;
+  width: 70px;
+  z-index: 2;
 }
 
-a {
-  text-decoration: none;
+#bubble-icon {
+  background: url("/img/twitter.png");
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  margin-left: 3px;
+  margin-top: 1px;
 }
 
-#centered h1 {
-  text-align: center;
+#call-to-action {
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  height: 400px;
+  margin-left: -15px;
+  margin-top: 20px;
+  padding: 15px;
+  position: absolute;
+  width: 320px;
+}
+
+#call-to-action h2 {
+  color: #386895;
+  font-family: 'Dosis';
+  font-size: 1.6em;
+  letter-spacing: 0;
+  margin: 12px 0 0 12px;
   text-transform: uppercase;
-  color: white;
-  text-shadow: 2px 2px rgba(255,255,255,0.4);
-  font-family: 'Wire One', sans-serif;
-  font-size: 4em;
-  margin-top: 85px;
-}
-
-#centered h2 {
-  text-align: center;
-  color: white;
-  opacity: .8;
-  margin-top: -30px;
 }

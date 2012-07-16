@@ -3,6 +3,7 @@
   <head>
     <title>Hackadoo</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Dosis:400' rel='stylesheet' type='text/css'>
     <script type="text/javascript">
       $(document).ready(function() {
         $('#centered')
@@ -14,17 +15,25 @@
           });
       });
     </script>
-    <link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/landing.css"/>
   </head>
   <body>
-    <div id="centered">
+    <div id="top">
+      <div id="header" class="center-column">
+        <h1>Hackadoo</h1>
+      </div>
+    </div>
+    <div id="content" class="center-column">
+      <div id="sunburst"></div>
       <a href="/login">
         <div id="bubble">
-          <h1>Hackadoo</h1> 
-          <h2>Sign in with Twitter</h2>
+          <div id="bubble-icon"></div>
         </div>
       </a>
+      <div id="call-to-action">
+        <h2>Sign in with Twitter</h2>
+      </div>
     </div>
+
   </body>
 </html>
