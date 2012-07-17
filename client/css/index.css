@@ -37,7 +37,7 @@ body {
   position: absolute;
   margin: 4px 0 0 2px;
   z-index: 2;
-  border-radius: 2px; 
+
   text-shadow: none;
   color: #888355;
 }
@@ -55,6 +55,8 @@ body {
 
 #bubble {
   background-color: #386895;
+  background-image: url("/img/twitter.png");
+  background-position: center center;
   border-radius: 999px;
   box-shadow: 0 0 10px white;
   height: 70px;

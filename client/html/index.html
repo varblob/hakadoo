@@ -4,49 +4,8 @@
     <title>Hackadoo</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Dosis:400' rel='stylesheet' type='text/css'>
-    <script type="text/javascript">
-      $(document).ready(function() {
-        $('#centered')
-          .mouseenter(function() { 
-            $(this).css('background-color', '#224A7C'); 
-          })
-          .mouseleave(function() {
-             $(this).css('background-color', '#133969'); 
-          });
-
-        // Quick POC for cursor blink
-        var $cursorBlink = $('.cursor-blink')
-          , hover;
-
-        $('#title')
-          .mouseenter(function() {
-            hover = true;
-            $cursorBlink.addClass('blink-on');
-
-            (function blink() { 
-              setTimeout(function() {
-                console.log('going');
-                if (!hover) return;
-
-                $cursorBlink.each(function() { 
-                  if ($(this).hasClass('blink-on')) {
-                    console.log('yes');
-                    $(this).removeClass('blink-on');
-                  } else {
-                    $(this).addClass('blink-on');         
-                  }
-                });
-                blink();
-              }, 600);
-            })();
-          })
-          .mouseleave(function() {
-            $cursorBlink.removeClass('blink-on');
-            hover = false;
-          });
-      });
-    </script>
-    <link rel="stylesheet" type="text/css" href="css/landing.css"/>
+    <script src="/js/index.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
   </head>
   <body>
     <div id="top">
@@ -58,7 +17,7 @@
       <div id="sunburst"></div>
       <a href="/login">
         <div id="bubble">
-          <div id="bubble-icon"></div>
+<!--          <div id="bubble-icon"></div>-->
         </div>
       </a>
       <div id="call-to-action">
