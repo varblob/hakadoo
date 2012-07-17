@@ -1,0 +1,6 @@
+{
+  "port": 80
+, "mongoURI": "mongodb://nodejitsu:2f1de90785f27ae6ebb9fd3facbeb972@flame.mongohq.com:27063/nodejitsudb160451772686"
+, "twitterCallback": "http://hackadoo.nodejitsu.com/callback"
+, "domain": "hackadoo.nodejitsu.com"
+}
