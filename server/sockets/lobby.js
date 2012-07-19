@@ -23,7 +23,7 @@ module.exports = function(socket) {
   socket.on('postChallenge', postChallenge.bind(this, userID));
 
   // Retrieve the user information and give it to the client.
-  Users.get(userID, this.e(function(user) {
+  Users.findOne({_id: userID}, this.e(function(user) {
     socket.emit('profile', user);
   }));
 };
@@ -61,13 +61,13 @@ function matchMaker() {
 function postChallenge(userID, data) {
   var opponentName = data.opponentName;
 
-  Users.get(userID, this.e(function(user) {
+  Users.findOne({_id: userID}, this.e(function(user) {
     var userName = user.name;
 
     if (challengeList[opponentName] === userName) {
       delete challengeList[opponentName];
 
-      Users.get({name: opponentName}, this.e(function(opponent) {
+      Users.findOne({name: opponentName}, this.e(function(opponent) {
         var opponentID = opponent._id;
         launchBattle(userID, opponentID);
       }));

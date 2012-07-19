@@ -13,7 +13,7 @@ var flatiron = require('flatiron')
   , director = require('director')
   , ecstatic = require('ecstatic')
   , socketIO = require('socket.io')
-  , resourceful = require('resourceful-mongo')
+  , mongoose = require('mongoose')
   ;
 
 // app.config
@@ -38,22 +38,19 @@ app.userIDToSocket = {};
 // A mapping of userID to battle state
 app.userIDToBattle = {};
 
+// TODO: use external store for all state information
+
 // Start the database
-resourceful.use('mongodb', {
-  uri: config.get('mongoURI')
-, onConnect: function(err) {
-    if (err) throw err;
+mongoose.connect(config.get('mongoURI'));
 
-    // Start the web server
-    app.start(config.get('port'));
+// Start the web server
+app.start(config.get('port'));
 
-    // Start socket.io listening
-    setupSocketIO();
+// Start socket.io listening
+setupSocketIO();
 
-    // Everything started up fine
-    console.log('OK!'); 
-  }
-});
+// Everything started up fine
+console.log('OK!'); 
 
 
 /*
@@ -66,7 +63,7 @@ function setupConfiguration() {
     .argv()
     .env()
     ;
-  env = config.get('NODE_ENV') || 'local';
+  env = config.get('NODE_ENV') || 'production';
   config
     .file({ 
       file: './config/config.json' 

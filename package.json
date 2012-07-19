@@ -1,27 +1,27 @@
 {
-  "description": "A competitive, realtime coding game"
-, "name": "Hackadoo"
-, "version": "0.0.0-15"
-, "private": false
-, "dependencies": {
-    "union": "0.1.x"
-  , "flatiron": "0.2.x"
-  , "resourceful-mongo": "https://github.com/varblob/resourceful-mongo/tarball/master"
-  , "oauth": "0.9.x"
-  , "async": "0.1.x"
-  , "mkdirp": "0.3.x"
-  , "socket.io": "0.9.x"
-  , "connect": "2.3.0"
-  , "director": "https://github.com/flatiron/director/tarball/master"
-  , "request": "2.9.x"
-  , "ecstatic": "0.1.x"
-  , "Set": "0.1.x"
-  }
-, "subdomain": "hackadoodledoo"
-, "scripts": {
+  "description": "A competitive, realtime coding game",
+  "name": "Hackadoodledoo",
+  "version": "0.0.0-22",
+  "private": false,
+  "dependencies": {
+    "union": "0.1.x",
+    "flatiron": "0.2.x",
+    "mongoose": "3.0.x",
+    "oauth": "0.9.x",
+    "async": "0.1.x",
+    "mkdirp": "0.3.x",
+    "socket.io": "0.9.x",
+    "connect": "2.3.0",
+    "director": "https://github.com/flatiron/director/tarball/master",
+    "request": "2.9.x",
+    "ecstatic": "0.1.x",
+    "Set": "0.1.x"
+  },
+  "subdomain": "hackadoodledoo",
+  "scripts": {
     "start": "node app.js"
-  }
-, "engines": {
+  },
+  "engines": {
     "node": "0.6.x"
   }
 }

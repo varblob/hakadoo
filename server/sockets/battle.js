@@ -19,7 +19,7 @@ module.exports = function(socket) {
   var players = Object.keys(battle.playerStates);
   var opponentID = players[1 ^ players.indexOf(userID)];
 
-  Users.get(opponentID, this.e(function(opponent) {
+  Users.findOne({_id: opponentID}, this.e(function(opponent) {
     socket.emit('test', {
       opponent: opponent.name
     });
