@@ -6,13 +6,13 @@ var Matches = new Schema({
   matchDate: Date
 
   // The question this match was over
-, questionID: Schema.ObjectID
+, questionID: Number
 
   // UserIDs  the two players involved in the match
 , playerIDs: Array
 
   // The winner of the match (there might not be a winner)
-, winnerID: Schema.ObjectID
+, winnerID: {any: {}}
 });
 
 Matches.path('playerIDs').validate(function(playerIDs) {

@@ -3,28 +3,57 @@ var app = require('flatiron').app
   , Set = require('Set')
   , oop = require('../util/oop')
   , Users = require('../models/users')
+  , Battle = require('../models/memory/battle')
   ;
 
 
 module.exports = function(socket) {
-  var userID = socket.handshake.session.userID; 
+  var userID = socket.handshake.session.userID;
+ 
+  Battle.getBattleForUser(userID, this.e(function(battle) {
 
-  
+    // Send the user to the lobby if he isn't in a battle
+    if (!battle) {
+      socket.emit('redirect', { url: '/lobby' });
+      return;
+    }
 
-  // Send the user to the lobby if he isn't in a battle
-  if (!battle) {
-    socket.emit('redirect', { url: '/lobby' });
-    return;
-  }
+    var players = Object.keys(battle.data.playerStates)
+      , opponentID = players[1 ^ players.indexOf(userID)];
 
-  var players = Object.keys(battle.playerStates);
-  console.log(players);
-  var opponentID = players[1 ^ players.indexOf(userID)];
+    // Send the players' profile information
+    Users.findOne({_id: opponentID}, this.e(function(opponent) {
+      Users.findOne({_id: userID}, this.e(function(user) {
+        socket.emit('ready', {
+          opponent: opponent
+        , user: user
+        , question: battle.data.question
+        , text: battle.data.playerStates[userID].text
+        });
+      }));
+    }));
 
-  Users.findOne({_id: opponentID}, this.e(function(opponent) {
-    socket.emit('test', {
-      opponent: opponent.name
-    });
+    /*
+     * Text updates
+     */
+    socket.on('textEntered', function(data) {
+      var text = data.text;
+      battle.updateText(userID, text, this.e(function() {
+        app.messages(opponentID, 'opponentText', {text: text});
+      }));
+    }.bind(this));
+
+    app.messages[userID].on('opponentText', function(data) {
+      var text = data.text;
+      battle.data.playerStates[opponentID].text = text;
+      socket.emit('textUpdate', data);
+    })
+   
+
+    /*
+     * Nukes
+     */
+
   }));
 };
 

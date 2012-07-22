@@ -113,10 +113,9 @@ function postChallenge(userID, data) {
 function launchBattle(userID1, userID2) {
 
   // Initialize battle state object
-  var question = Questions[~~(Math.random() * Questions.length)];
-  var battle = new Battle(userID1, userID2, question);
-
-  [userID1, userID2].forEach(function(userID) {
-    app.messages(userID, 'startBattle');
+  Battle.startNewBattle(userID1, userID2, function() { 
+    [userID1, userID2].forEach(function(userID) {
+      app.messages(userID, 'startBattle');
+    }); 
   });
 }

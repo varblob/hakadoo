@@ -98,7 +98,6 @@ $(document).ready(function() {'use strict';
     matchBrackets: true,
     onChange: function(e) {
       var text = userCode.getValue();
-      $.console.log('sending text', text);
       socket.emit('textEntered', {
         text: text
       });
@@ -150,8 +149,8 @@ $(document).ready(function() {'use strict';
   e.preventDefault();
   });
 
-  // socket event handlers
 
+  //================= socket listeners ==================
   socket.on('peek', function() {
     useAbility(gameData.opponent.consumables, 'peek', rightButtons.find('.peek'));
   });
@@ -177,7 +176,7 @@ $(document).ready(function() {'use strict';
   });
 
   socket.on('textUpdate', function(data) {
-    $.console.log('textUpdate' + data.text);
+    console.log('got text update');
     opponentText = data.text;
     opponentCode.setValue(censor(data.text));
   });
@@ -192,10 +191,10 @@ $(document).ready(function() {'use strict';
     var timer;
         
     gameData.opponent = data.opponent;
-    gameData.user = data.me;
+    gameData.user = data.user;
     gameData.elapsed = 0;
     gameData.limit = 5 * 60;
-    
+
     // add the consumable numbers to the user data object    
     gameData.user.consumables = $.extend({}, defaultConsumables);
     gameData.opponent.consumables = $.extend({}, defaultConsumables);
@@ -229,9 +228,8 @@ $(document).ready(function() {'use strict';
     bindUser(gameData.opponent, rightContainer);
 
     // Set up function header
-    userCode.setValue('function(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
-    
-    
+    userCode.setValue(data.text);
+    socket.emit('textEntered', {text: data.text});
   });
 
   socket.on('lose', function() {
