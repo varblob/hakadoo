@@ -3,6 +3,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=windows-1250">
 	<script type="text/javascript" src="/lib/jquery.js"></script>
+	
 	<script src="/socket.io/socket.io.js"></script>
 
 	<script src="/lib/codemirror/codemirror.js"></script>
@@ -13,7 +14,10 @@
 	<link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
     <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
 	
-	<script type="text/javascript" src="/js/battle.js"></script>
+	<script type="text/javascript" src="/js/jquery.libs.js"></script>
+	<script type="text/javascript" src="/js/jquery.hackadoo.js"></script>
+	<script type="text/javascript" src="/js/utils.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
 	<script type="text/javascript" src="/js/validator.js"></script>
 	
 	<link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
@@ -28,66 +32,71 @@
 			
 			<div id="top_section">
 				<div id="challenge_text">
-          Waiting for a challenger...
+	     			 Waiting for a challenger...
 				</div>
-				<div class="clearfix">
-					<div id="self">
-				      <div class="avatar"></div>
-				      <a class="username"></a>
-				    </div>
-				    <div id="opponent">
-				      <div class="avatar"></div>
-				      <a class="username"></a>
-				    </div>
+				<div class="flat">					
 					<div id="timer">
-						00:00:00
+						00:00
 					</div>
-					
 			    </div> 
 			</div>
 		</div>
 		<div class="clearfix">
-			<div id="left_container" class="clearfix">
-				<div class="buttons">
-					<button class="attack_button remove">
-						<div class="label">nuke</div>
-						<div class="count">-</div>
-					</button>
-					<button class="attack_button swap">
-						<div class="label">swap</div>
-						<div class="count">-</div>
-					</button>
-					<button class="attack_button peek">
-						<div class="label">reveal</div>
-						<div class="count">-</div>
-					</button>
+			<div id="left_container">
+				<div class="top clearfix">
+					<div class="user_info left">
+				      <div class="avatar">:P</div>
+				      <a class="username">-</a>
+				    </div>
+					<div class="buttons left">
+						<button class="attack_button remove">
+							<div class="label">nuke</div>
+							<div class="count">-</div>
+						</button>
+						<button class="attack_button swap">
+							<div class="label">swap</div>
+							<div class="count">-</div>
+						</button>
+						<button class="attack_button peek">
+							<div class="label">peek</div>
+							<div class="count">-</div>
+						</button>
+					</div>
 				</div>
-				<div id="left_section">
+				<div class="clear"></div>
+				<div class="code">
 					<textarea id="user_code"></textarea>
 				</div>
 			</div>
 			<div id="right_container" class="clearfix">
-				<div class="buttons">
-					<button class="attack_button remove">
-						<div class="label">nuke</div>
-						<div class="count">-</div>
-					</button>
-					<button class="attack_button swap">
-						<div class="label">swap</div>
-						<div class="count">-</div>
-					</button>
-					<button class="attack_button peek">
-						<div class="label">reveal</div>
-						<div class="count">-</div>
-					</button>
+				<div class="top clearfix">
+					<div class="user_info right">
+				      <div class="avatar">:P</div>
+				      <a class="username">-</a>
+				    </div>
+				    <div class="buttons right">
+						<button class="attack_button remove">
+							<div class="label">nuke</div>
+							<div class="count">-</div>
+						</button>
+						<button class="attack_button swap">
+							<div class="label">swap</div>
+							<div class="count">-</div>
+						</button>
+						<button class="attack_button peek">
+							<div class="label">peek</div>
+							<div class="count">-</div>
+						</button>
+					</div>
 				</div>
-				<div id="right_section">
+				<div class="clear"></div>
+				<div class="code">
 					<textarea id="opponent_code"></textarea>
 				</div>
 			</div>
 		</div>
-		<div>
-			<div class="button" id="compile_button">Compile</div>
+		<div id="bottom_container">
+			<div class="button" id="compile_button">Compile<span id="compile_shortcut">ctrl + enter</span></div>
 			<div class="console">
 				<ol id="console"></ol>
 			</div>

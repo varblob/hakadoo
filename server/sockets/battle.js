@@ -67,6 +67,12 @@ function bindBattleLogic(players) {
   
   // Pick a random question from the db
   var currentQuestion = questions[~~(Math.random() * questions.length)];
+  
+  // use this if they cheat
+  // me.emit('cheating', {msg:'<div><h1>Hey you there!</h1>'
+              // + '<p>Are you messing with the client code?</p>'
+              // + '<p>If so we would like to enlist your help in improving hackadoo.</br>'
+              // + '  E-mail us at team@hackadoo.com</p>'});
 
   players.forEach(function(me, i) {
     var opponent = players[i^1];
@@ -102,17 +108,20 @@ function bindBattleLogic(players) {
         currentQuestion.alwaysTest.forEach(function(test, i){
           if (data.outputs[i] !== currentQuestion.answer(test)) {
             data.worked = false;
-            me.emit('cheating', {msg:'<div><h1>Hey you there!</h1>'
-              + '<p>Are you messing with the client code?</p>'
-              + '<p>If so we would like to enlist your help in improving hackadoo.</br>'
-              + '  E-mail us at team@hackadoo.com</p>'});
           }
         });
       }
       
       // TODO: We need to add a second step that sends back some random inputs back to the client
-      // this is so that the client can't just write a bunch of if statements to handle the unit tests      
+      // this is so that the client can't just write a bunch of if statements to handle the unit tests  
+      // use this if they cheat
+		  // me.emit('cheating', {msg:'<div><h1>Hey you there!</h1>'
+		              // + '<p>Are you messing with the client code?</p>'
+		              // + '<p>If so we would like to enlist your help in improving hackadoo.</br>'
+		              // + '  E-mail us at team@hackadoo.com</p>'});    
       
+      // send me the status of the compile
+      me.emit('user:compile', {worked:data.worked});
       // send the compile status to the opponent
       opponent.emit('compile', {worked:data.worked});
     });
