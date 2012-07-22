@@ -15,7 +15,7 @@
     "director": "https://github.com/flatiron/director/tarball/master",
     "request": "2.9.x",
     "ecstatic": "0.1.x",
-    "Set": "0.1.x"
+    "redis": "0.7.x"
   },
   "subdomain": "hackadoodledoo",
   "scripts": {

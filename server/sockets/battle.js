@@ -8,7 +8,8 @@ var app = require('flatiron').app
 
 module.exports = function(socket) {
   var userID = socket.handshake.session.userID; 
-  var battle = app.userIDToBattle[userID];
+
+  
 
   // Send the user to the lobby if he isn't in a battle
   if (!battle) {
@@ -17,6 +18,7 @@ module.exports = function(socket) {
   }
 
   var players = Object.keys(battle.playerStates);
+  console.log(players);
   var opponentID = players[1 ^ players.indexOf(userID)];
 
   Users.findOne({_id: opponentID}, this.e(function(opponent) {

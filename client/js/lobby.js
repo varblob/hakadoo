@@ -18,7 +18,7 @@ $(document).ready(function() {'use strict';
     console.log('got an error');
   });
 
-  socket.on('battle', function() {
+  socket.on('startBattle', function() {
     window.location = '/battle';
   });
 

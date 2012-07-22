@@ -120,7 +120,7 @@ exports.callback = function() {
         };
 
         // Returning user
-        if (user._id) {
+        if (user) {
 
           // Account for changes to the user's screen name or avatar
           user.avatar = avatar;

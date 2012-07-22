@@ -6,12 +6,6 @@ var app = require('flatiron').app
   , Questions = require('../models/memory/questions')
   ;
 
-// Users seeking any other opponent
-var waitingPool = [];
-
-// Users seeking a specific opponent
-var challengeList = {};
-
 // Interval at which waiting users are paired together to battle
 var waitingInterval = 5000 // ms
 setInterval(matchMaker, waitingInterval);
@@ -26,17 +20,23 @@ module.exports = function(socket) {
   Users.findOne({_id: userID}, this.e(function(user) {
     socket.emit('profile', user);
   }));
+
+  // Listen for the startBattle message, indicating an opponent has been
+  // registered and the battle data has been prepared
+  app.messages[userID].on('startBattle', function() {
+    socket.emit('startBattle');
+  })
 };
 
 
 /*
  * Adds the connected user to the general pool of waiting users
- * @param (Object) data
  * @param (String) userID
  */
-function joinWaitingPool(userID, data) {
-  waitingPool.push(userID);
+function joinWaitingPool(userID) {
+  app.store.sadd('waitingPool', userID);
 }
+
 
 /*
  * This function is called regularly to pair together players in the 
@@ -44,10 +44,34 @@ function joinWaitingPool(userID, data) {
  * this is where more advanced pairing logic will go in the future.
  */
 function matchMaker() {
+  var pairsRemain = true;
+  
+  async.whilst(
+    function() {
+      return pairsRemain;
+    }
+  , function(cb) {
+      app.store.scard('waitingPool', function(err, n) {
+        if (err) throw err;
+        pairsRemain = n > 1;
 
-  while (waitingPool.length > 1) {
-    launchBattle(waitingPool.shift(), waitingPool.shift());
-  }
+        if (pairsRemain) {
+          app.store.spop('waitingPool', function(err, userID1) {
+            if (err) throw err;
+            app.store.spop('waitingPool', function(err, userID2) {
+              if (err) throw err;
+              launchBattle(userID1, userID2);
+              cb();
+            });
+          });
+
+        } else {
+          cb();
+        }
+      });
+    }
+    , function() {}
+  );
 }
 
 
@@ -64,16 +88,19 @@ function postChallenge(userID, data) {
   Users.findOne({_id: userID}, this.e(function(user) {
     var userName = user.name;
 
-    if (challengeList[opponentName] === userName) {
-      delete challengeList[opponentName];
+    app.store.hmget('challengeList', opponentName, this.e(function(val) {
 
-      Users.findOne({name: opponentName}, this.e(function(opponent) {
-        var opponentID = opponent._id;
-        launchBattle(userID, opponentID);
-      }));
-    } else {
-      challengeList[userName] = opponentName;
-    }
+      if (val[0] === userName) {
+        app.store.hdel('challengeList', userName);
+
+        Users.findOne({name: opponentName}, this.e(function(opponent) {
+          var opponentID = opponent._id;
+          launchBattle(userID, opponentID);
+        }));
+      } else {
+        app.store.hmset('challengeList', userName, opponentName);
+      }
+    }));
   }));
 }
 
@@ -90,8 +117,6 @@ function launchBattle(userID1, userID2) {
   var battle = new Battle(userID1, userID2, question);
 
   [userID1, userID2].forEach(function(userID) {
-    app.userIDToBattle[userID] = battle;
-    var socket = app.userIDToSocket[userID];
-    socket.emit('battle');
+    app.messages(userID, 'startBattle');
   });
 }

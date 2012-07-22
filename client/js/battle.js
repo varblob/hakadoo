@@ -2,28 +2,28 @@ $(document).ready(function() {'use strict';
 
   var
 
-  	// Connect to socket.io
-		socket = io.connect(window.Array.host)
+    // Connect to socket.io
+    socket = io.connect(window.Array.host)
 
-		// User abilities
-		, abilities = {
-			  remove: 3,
-			  swap: 4,
-			  peek: 5
-			}
-		, opponentAbilities = {
-			  remove: 3,
-			  swap: 4,
-			  peek: 5
-			}
+    // User abilities
+    , abilities = {
+        remove: 3,
+        swap: 4,
+        peek: 5
+      }
+    , opponentAbilities = {
+        remove: 3,
+        swap: 4,
+        peek: 5
+      }
 
-	  , you
-	  , them
-	  , opponentText
+    , you
+    , them
+    , opponentText
     ;
 
   socket.on('test', function(data) {
-    console.log('You are fighting', data.opponent);
+    alert('You are fighting', data.opponent);
   })
 
   // initializing codemirror hakadoo keyMapping
@@ -156,7 +156,7 @@ $(document).ready(function() {'use strict';
     // setting the challenge text
     $('#challenge_text').text(question.question);
 
-		// setting user profile info 
+    // setting user profile info 
     templateUserBox(user, $('#self'));
     templateUserBox(opponent, $('#opponent'));
 
@@ -190,13 +190,13 @@ $(document).ready(function() {'use strict';
   
   // if they cheat lets get their help in making hackadoo better!
   socket.on('cheater', function(data){
-		$.fancybox(data.msg);
+    $.fancybox(data.msg);
   });
 
   function compileHandler() {
     var worked = false
-    	, outputs;
-    	
+      , outputs;
+      
     console.log('compile');
 
     try {
@@ -205,8 +205,8 @@ $(document).ready(function() {'use strict';
     } catch(e) {
       $('#console').prepend('<li>' + e.message + '</li>');
       socket.emit('compile', {
-	      worked: false
-	    });
+        worked: false
+      });
     }    
   }
 
@@ -230,7 +230,7 @@ $(document).ready(function() {'use strict';
   }
 
   function updateAbilities(store, container) {
-  	var k;
+    var k;
     for(k in store) {
       container.find('.' + k).find('.count').text(store[k]);
     }
