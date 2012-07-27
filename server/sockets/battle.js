@@ -8,7 +8,9 @@ var app = require('flatiron').app
 
 
 module.exports = function(socket) {
-  var userID = socket.handshake.session.userID;
+  var self = this
+    , userID = socket.handshake.session.userID
+    ;
  
   Battle.getBattleForUser(userID, this.e(function(battle) {
 
@@ -18,7 +20,7 @@ module.exports = function(socket) {
       return;
     }
 
-    var players = Object.keys(battle.data.playerStates)
+    var players = Object.keys(battle.players)
       , opponentID = players[1 ^ players.indexOf(userID)];
 
     // Send the players' profile information
@@ -27,8 +29,9 @@ module.exports = function(socket) {
         socket.emit('ready', {
           opponent: opponent
         , user: user
-        , question: battle.data.question
-        , text: battle.data.playerStates[userID].text
+        , question: battle.question
+        , text: battle.players[userID].text
+        , opponentText: battle.players[opponentID].text
         });
       }));
     }));
@@ -38,22 +41,38 @@ module.exports = function(socket) {
      */
     socket.on('textEntered', function(data) {
       var text = data.text;
-      battle.updateText(userID, text, this.e(function() {
+      battle.updateText(userID, text, self.e(function() {
         app.messages(opponentID, 'opponentText', {text: text});
       }));
-    }.bind(this));
+    });
 
     app.messages[userID].on('opponentText', function(data) {
       var text = data.text;
-      battle.data.playerStates[opponentID].text = text;
+      battle.players[opponentID].text = text;
       socket.emit('textUpdate', data);
-    })
+    });
    
 
     /*
-     * Nukes
+     * Attacks
      */
+    ['nuke', 'swap', 'peek'].forEach(function(attackName) { 
 
+      // User attacks
+      socket.on(attackName, function() {
+        battle.attack(userID, attackName, self.e(function(success) {
+          if (success) {
+            app.messages(opponentID, attackName);
+          }
+        }));
+      });
+
+      // Opponent attacks
+      app.messages[userID].on(attackName, function() {
+        battle.players[opponentID].attacks[attackName]--;
+        socket.emit(attackName);
+      });
+    });
   }));
 };
 

@@ -19,10 +19,16 @@ var app = require('flatiron').app
 
 /*
  * Object to handle battle state changes
- * @param (Object) data
+ * @param (JSON) data
  */
 function Battle(data) {
-  this.data = JSON.parse(data); 
+
+  // Parse to JSON object if given as string
+  if (typeof data === 'string') {
+    data = JSON.parse(data);
+  }
+
+  this.update(data);
 }
 
 
@@ -46,17 +52,15 @@ Battle.startNewBattle = function(userID1, userID2, cb) {
   }, function(err, match) {
     if (err) return cb(err);
 
-    // Everything within `self.data` must be JSON-serializable
-    var data = {
-      _id: match._id
-    , question: Questions[questionID]
-    , gameStart: gameStart
-    , playerStates: {}
-    };
+    var data = {};
+    data._id = match._id;
+    data.question = Questions[questionID];
+    data.gameStart = gameStart;
+    data.players = {};
 
     async.parallel([userID1, userID2].map(function(userID) {
       return function(cb) {
-        data.playerStates[userID] = {
+        data.players[userID] = {
           text: ' function(s) {\n\n\t// your code here\n\n\treturn s;\n}'
         , attacks: initialAttacks
         };
@@ -67,7 +71,7 @@ Battle.startNewBattle = function(userID1, userID2, cb) {
     , function(err) {
       if (err) return cb(err);
      
-      var battle = new Battle(JSON.stringify(data));
+      var battle = new Battle(data);
       battle.save(cb);
     });
   });
@@ -96,13 +100,39 @@ Battle.getBattleForUser = function(userID, cb) {
 
 
 /*
+ * Return a JSON representation of the battle object
+ * @return (String)
+ */
+Battle.prototype.toJSON = function() {
+  return JSON.stringify({
+    _id: this._id
+  , question: this.question
+  , gameStart: this.gameStart
+  , players: this.players
+  });
+};
+
+
+/*
+ * Overwrites the present battle state with the state given in the object `data`
+ * @param (Object) data
+ */
+Battle.prototype.update = function(data) {
+  this._id = data._id;
+  this.question = data.question; 
+  this.gameStart = data.gameStart;
+  this.players = data.players;
+};
+
+
+/*
  * Serializes the object and saves it to the data store
  * @param (Function) cb
  */
 Battle.prototype.save = function(cb) {
-  var asJSON = JSON.stringify(this.data);
-  app.store.hmset('battles', this.data._id, asJSON, cb);
-}
+  var asJSON = this.toJSON();
+  app.store.hmset('battles', this._id, asJSON, cb);
+};
 
 
 /*
@@ -110,9 +140,9 @@ Battle.prototype.save = function(cb) {
  * @param (Function) cb
  */
 Battle.prototype.fetch = function(cb) {
-  app.store.hmget('battles', this.data._id, function(err, asJSON) {
+  app.store.hmget('battles', this._id, function(err, asJSON) {
     if (err) return cb(err);
-    this.data = JSON.parse(asJSON);
+    this.update(JSON.parse(asJSON));
     cb(null);
   });
 }
@@ -124,8 +154,30 @@ Battle.prototype.fetch = function(cb) {
  * @param (String) text
  */
 Battle.prototype.updateText = function(userID, text, cb) { 
-  this.data.playerStates[userID].text = text;
+  this.players[userID].text = text;
   this.save(cb);
+}
+
+
+/*
+ * If the given attack is available to the user, decrement its corresponding
+ * counter are callback success. Otherwise callback failure.
+ * @param (String) userID
+ * @param (String) attackName
+ * @param (Function) cb 
+ */
+Battle.prototype.attack = function(userID, attackName, cb) {
+  var attacks = this.players[userID].attacks; 
+
+  if (attacks[attackName]) {
+    attacks[attackName]--;
+    this.save(function(err) {
+      if (err) return cb(err);
+      cb(null, true);
+    });
+  } else {
+    cb(null, false);
+  }
 }
 
 

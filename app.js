@@ -185,7 +185,6 @@ function setUpRedis() {
       , eventName = messageObject.event;
     delete messageObject.event;
     app.messages[channel].emit(eventName, messageObject);
-    console.log('pubsub: received', eventName, messageObject, channel, message);
   });
 
   // Expose a function for easily sending messages
@@ -193,6 +192,5 @@ function setUpRedis() {
     data = data || {};
     data.event = eventName;
     app.store.publish(toUser, JSON.stringify(data || {}));
-    console.log('pubsub: publishing', toUser, data);
   };
 };

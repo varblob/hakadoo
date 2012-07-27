@@ -130,7 +130,7 @@ $(document).ready(function() {'use strict';
 
   leftButtons.find('.remove').click(function() {
     if(useAbility(gameData.user.consumables, 'remove', leftButtons.find('.remove'))) {
-      socket.emit('remove');
+      socket.emit('nuke');
     }
   });
 
@@ -152,10 +152,12 @@ $(document).ready(function() {'use strict';
 
   //================= socket listeners ==================
   socket.on('peek', function() {
+    console.log('attack: peek');
     useAbility(gameData.opponent.consumables, 'peek', rightButtons.find('.peek'));
   });
 
   socket.on('swap', function() {
+    console.log('attack: swap');
     var text = userCode.getValue().split(''), swap = Math.floor(Math.random() * text.length - 1), holder = text[swap];
 
     useAbility(gameData.opponent.consumables, 'swap', rightButtons.find('.swap'));
@@ -164,7 +166,8 @@ $(document).ready(function() {'use strict';
     userCode.setValue(text.join(''));
   });
 
-  socket.on('remove', function() {
+  socket.on('nuke', function() {
+    console.log('attack: nuke');
     var lines = userCode.getValue().split('\n')
       , killLine = Math.floor(Math.random() * lines.length)
       , newText = lines.filter(function(line, i) {
@@ -227,9 +230,9 @@ $(document).ready(function() {'use strict';
     bindUser(gameData.user, leftContainer);
     bindUser(gameData.opponent, rightContainer);
 
-    // Set up function header
+    // Set up initial text for user and opponent
     userCode.setValue(data.text);
-    socket.emit('textEntered', {text: data.text});
+    opponentCode.setValue(censor(data.opponentText));
   });
 
   socket.on('lose', function() {
