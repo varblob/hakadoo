@@ -26,7 +26,6 @@ module.exports = function(socket) {
     // Send the players' profile information
     Users.findOne({_id: opponentID}, this.e(function(opponent) {
       Users.findOne({_id: userID}, this.e(function(user) {
-        console.log('hmmmm', user.properties, user.attributes, user._docs, user._doc);
 
         [user, opponent].forEach(function(player) {
           player._doc.attacks = battle.players[player._id].attacks;

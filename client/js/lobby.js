@@ -25,4 +25,20 @@ $(document).ready(function() {'use strict';
   socket.on('profile', function(user) {
     console.log('got profile information', user);
   });
+
+  socket.on('userLoggedIn', function(data) {
+    var user = data.user;
+    var $userEntry = $('<li><a href="#"></a></li>');
+    $userEntry.attr('data-id', user._id);
+    $userEntry.find('a')
+      .html(user.name)
+      .attr('href', 'http://twitter.com/' + user.name)
+      ;
+    $('#users-online').append($userEntry);
+  });
+
+  socket.on('userLoggedOut', function(data) {
+    $('#users-online').find('[data-id="' + data.userID + '"]')
+      .remove();
+  });
 });

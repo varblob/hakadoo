@@ -134,6 +134,10 @@ function setUpSocketIO() {
 
   util.inherits(subEventer, EventEmitter);
 
+  // Set up a global channel for broadcasting messages to all users on the site
+  app.messages['global'] = new subEventer();
+  app.pubsub.subscribe('global');
+
   // Connect user sessions and sockets.io clients. This attaches the session 
   // object to the socket.io handshake object
   io.configure(function() {

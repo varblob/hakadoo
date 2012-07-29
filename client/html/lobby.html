@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Hackadoo</title>
     <script src="/socket.io/socket.io.js"></script>  
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -18,11 +19,8 @@
       @<input id="opponent-name" type="text" />
       <button id="challenge">Send invite</button>
 
-      <h3>Other users online</h3>
-      <ul>
-        <li>Foo</li>
-        <li>Bar</li>
-      </ul>
+      <h3>Users online</h3>
+      <ul id="users-online"></ul>
     </div>
   </body>
 </html>

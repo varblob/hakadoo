@@ -6,7 +6,8 @@
  * OAuth callback.
  */
 
-var config = require('flatiron').app.config
+var app = require('flatiron').app
+  , config = app.config
   , querystring = require('querystring')
   , http = require('http')
   , async = require('async')
@@ -114,9 +115,14 @@ exports.callback = function() {
         // Function called at end of both new user and returning user codepaths
         var proceed = function(err, user) {
           if (err) return self.error();
-         
-          session.userID = user._id;
-          self.redirect('/lobby');
+       
+          app.store.sadd('onlineUsers', user._id, self.e(function() { 
+            app.messages('global', 'userLoggedIn', {userID: user._id});
+            session.userID = user._id;
+            self.redirect('/lobby');
+          }));
+          // Add user ID to redis logged-in set
+            // Send out global new user message
         };
 
         // Returning user
@@ -150,7 +156,11 @@ exports.callback = function() {
  */
 exports.logout = function() {
   var session = this.req.session;
-  delete session.auth;
-  delete session.userID;
-  this.redirect('/');
+
+  app.store.srem('onlineUsers', session.userID, this.e(function() { 
+    app.messages('global', 'userLoggedOut', {userID: session.userID});
+    delete session.auth;
+    delete session.userID;
+    this.redirect('/');
+  }));
 };

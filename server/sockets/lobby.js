@@ -21,6 +21,22 @@ module.exports = function(socket) {
     socket.emit('profile', user);
   }));
 
+  // Give the client a list of active users on the site
+  app.store.smembers('onlineUsers', this.e(function(userIDs) {
+    userIDs.forEach(function(userID) {
+      userLoggedIn(userID, socket);
+    });
+  }));
+
+  app.messages['global'].on('userLoggedIn', function(data) {
+    var userID = data.userID;
+    userLoggedIn(userID, socket);
+  });
+
+  app.messages['global'].on('userLoggedOut', function(data) {
+    socket.emit('userLoggedOut', {userID: userID});
+  });
+
   // Listen for the startBattle message, indicating an opponent has been
   // registered and the battle data has been prepared
   app.messages[userID].on('startBattle', function() {
@@ -117,5 +133,24 @@ function launchBattle(userID1, userID2) {
     [userID1, userID2].forEach(function(userID) {
       app.messages(userID, 'startBattle');
     }); 
+  });
+}
+
+
+/*
+ * Notify the client that the user given by `userID` is logged in
+ * @param (String) userID
+ * @param (Socket) socket
+ * @param (Function) cb
+ */
+function userLoggedIn(userID, socket, cb) {
+  cb = cb || function() {};
+
+  Users.findOne({_id: userID}, function(err, user) {
+    if (err) return cb(err);
+
+    socket.emit('userLoggedIn', {
+      user: user
+    });
   });
 }
