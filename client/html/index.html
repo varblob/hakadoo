@@ -3,28 +3,34 @@
   <head>
     <title>Hackadoo</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function() {
-        $('#centered')
-          .mouseenter(function() { 
-            $(this).css('background-color', '#224A7C'); 
-          })
-          .mouseleave(function() {
-             $(this).css('background-color', '#133969'); 
-          });
-      });
-    </script>
-    <link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="css/landing.css"/>
+    <link href='http://fonts.googleapis.com/css?family=Dosis:400' rel='stylesheet' type='text/css'>
+    <script src="/js/index.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
   </head>
   <body>
-    <div id="centered">
-      <a href="/login">
-        <div id="bubble">
-          <h1>Hackadoo</h1> 
-          <h2>Sign in with Twitter</h2>
-        </div>
-      </a>
+    <div id="top">
+      <div id="header" class="center-column">
+        <a href="http://hackadoo.com">
+          <h1 id="title">Hackadoo</h1>
+        </a>
+        <h1 class="cursor-blink">;</h1>
+      </div>
     </div>
+    <div id="content" class="center-column">
+      <div id="sunburst"></div>
+      <a href="/login">
+        <div id="bubble"></div>
+      </a>
+      <div id="call-to-action">
+        <h2>Sign in with Twitter</h2>
+        <p><strong>Hackadoo is a realtime, competitive coding game.</strong></p>
+        <p>The objective is to write a correct solution to a given programming challenge before your opponent does.</p>
+         
+        <p>Have fun, sharpen your coding skills, and assert your hacker dominance!</p>
+
+        <p>Hackadoo was created at the <a href="http://www.meetup.com/Battle-of-the-Braces/events/60476932/">Meetup.com JavaScipt Hackathon</a>, where it took first place.</p>
+      </div>
+    </div>
+
   </body>
 </html>

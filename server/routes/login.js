@@ -76,14 +76,14 @@ exports.callback = function() {
 
   oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier, 
     function(err, oauth_access_token, oauth_access_token_secret, results) {
+      if (err) {
+        console.log(err);
+        return self.error();
+      }
 
     var screenName = results.screen_name
       , twitterID = results.user_id
       , profileImage;
-
-    if (err) {
-      return self.error();
-    }
 
     oauth.access_token = oauth_access_token;
     oauth.access_token_secret = oauth_access_token_secret;
@@ -105,19 +105,22 @@ exports.callback = function() {
       var avatar = res.headers.location;
 
       // Check if this user is new or returning
-      Users.get({twitterID: twitterID}, function(err, user) {
-        if (err) return self.error();
+      Users.findOne({twitterID: twitterID}, function(err, user) {
+        if (err) {
+          console.log(err);
+          return self.error();
+        }
 
         // Function called at end of both new user and returning user codepaths
-        var proceed = function(err, user) { 
+        var proceed = function(err, user) {
           if (err) return self.error();
          
           session.userID = user._id;
-          self.redirect('/battle');
+          self.redirect('/lobby');
         };
 
         // Returning user
-        if (user._id) {
+        if (user) {
 
           // Account for changes to the user's screen name or avatar
           user.avatar = avatar;

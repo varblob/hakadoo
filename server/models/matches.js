@@ -1,26 +1,22 @@
-var resourceful = require('resourceful-mongo')
-  , config = require('flatiron').app.config
+var mongoose = require('mongoose')
+  , Schema = mongoose.Schema
   ;
 
-var Matches = module.exports = resourceful.define('matches', function() {
-  this.use('mongodb', {
-    uri: config.get('mongoURI')
-  , collection: 'matches'
-  , safe: true
-  });
-
-  // Keep track of the match time
-  this.timestamps()
+var Matches = new Schema({
+  matchDate: Date
 
   // The question this match was over
-  this.string('questionID');
+, questionID: Number
 
   // UserIDs  the two players involved in the match
-  this.array('playerIDs').conform(function(IDs) {
-    return IDs.length === 2;
-  });
+, playerIDs: Array
 
-  // The winner of the match
-  // Note: there might not be a winner
-  this.string('winnerID')
+  // The winner of the match (there might not be a winner)
+, winnerID: {any: {}}
 });
+
+Matches.path('playerIDs').validate(function(playerIDs) {
+  return playerIDs.length === 2;
+});
+
+module.exports = mongoose.model('matches', Matches);

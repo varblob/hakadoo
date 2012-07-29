@@ -1,19 +1,12 @@
-var resourceful = require('resourceful-mongo')
-  , config = require('flatiron').app.config
+var mongoose = require('mongoose')
+  , Schema = mongoose.Schema
   ;
 
-var Users = module.exports = resourceful.define('users', function() {
-  this.use('mongodb', {
-    uri: config.get('mongoURI')
-  , collection: 'users'
-  , safe: true
-  });
-
-  // Keep track of user signup date
-  this.timestamps()
-
-  // Basic Twitter information
-  this.string('name');
-  this.string('avatar');
-  this.string('twitterID');
+var Users = new Schema({
+  name: String
+, avatar: String
+, twitterID: String
+, joinDate: Date
 });
+
+module.exports = mongoose.model('users', Users);

@@ -3,19 +3,26 @@ $(document).ready(function() {'use strict';
   // Connect to socket.io
   var socket = io.connect(window.Array.host);
 
-  $('#general').click(function() {
-    socket.emit('joinGeneralPool');
+  $('#waiting').click(function() {
+    socket.emit('joinWaitingPool');
   });
 
   $('#challenge').click(function() {
-     socket.emit('joinGeneralPool');   
+     console.log($('#opponent-name').val()) 
+    socket.emit('postChallenge', { 
+      opponentName: $('#opponent-name').val()
+    });
   });
 
   socket.on('error', function() {
     console.log('got an error');
   });
 
-  socket.on('battle', function() {
+  socket.on('startBattle', function() {
     window.location = '/battle';
+  });
+
+  socket.on('profile', function(user) {
+    console.log('got profile information', user);
   });
 });

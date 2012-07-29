@@ -1,6 +1,6 @@
 {
   "port": 8888
-, "mongoURI": "mongodb://localhost/hackadoo"
+, "mongoURI": "mongodb://localhost/hackadoo2"
+, "redisURI": "redis://localhost:6379"
 , "twitterCallback": "http://localhost:8888/callback"
-, "domain": "localhost"
 }

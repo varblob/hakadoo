@@ -1,32 +1,27 @@
 $(document).ready(function() {'use strict';
-	//============== vars ===============
+
+  //============== vars ===============
   var
-		//some containers that are oft used
-		  leftContainer = $('#left_container')
-		, rightContainer = $('#right_container')
-		, leftButtons = leftContainer.find('.buttons')
-		, rightButtons = rightContainer.find('.buttons')
-		
-		// Connect to socket.io
-		, socket = $.io.connect(window.Array.host)
+    //some containers that are oft used
+      leftContainer = $('#left_container')
+    , rightContainer = $('#right_container')
+    , leftButtons = leftContainer.find('.buttons')
+    , rightButtons = rightContainer.find('.buttons')
+    
+    // Connect to socket.io
+    , socket = $.io.connect(window.Array.host)
 
-		// User Consumables
-		// XXX: this should probably be game dependent
-		, defaultConsumables = {
-				remove: 1,
-			  swap: 1,
-			  peek: 1
-			}
-
-	  , userCode
-	  , opponentCode
-	  , opponentText
-	  , gameData = {};
-	  
-	//=============== functions ==================
-	function compileHandler() {
+    // Game-specific information
+    , userCode
+    , opponentCode
+    , opponentText
+    , gameData = {}
+    ;
+    
+  //=============== functions ==================
+  function compileHandler() {
     var worked = false
-			, outputs;
+      , outputs;
 
     try {
       outputs = $.hakadoo.validator.generateOutputs(gameData.question, userCode.getValue());
@@ -34,8 +29,8 @@ $(document).ready(function() {'use strict';
     } catch(e) {
       $('#console').prepend('<li>' + e.name + ': ' + e.message + '</li>');
       socket.emit('compile', {
-	      worked: false
-	    });
+        worked: false
+      });
     }    
   }
 
@@ -43,10 +38,10 @@ $(document).ready(function() {'use strict';
     return text.replace(/\w/g, '01');
   }
 
-	// user data related
+  // user data related
   function setAbility(store, ability, val, button) {
     store[ability] = val;
-    if(gameData.user.consumables[ability] < 0) {
+    if(gameData.user.attacks[ability] < 0) {
       button.toggleClass('disabled', true);
     } else {
       button.toggleClass('disabled', false);
@@ -60,10 +55,13 @@ $(document).ready(function() {'use strict';
   }
 
   function updateAbilities(store, container) {
-		var k;
-		for(k in store) {
-		  container.find('.' + k).find('.count').text(store[k]);
-		}
+    console.log(']]]', store);
+    var k;
+
+    for (k in store) {
+      container.find('.' + k + ' .count').text(store[k]);
+      console.log(k, '.' + k + ' .count');
+    }
   }
   
   function bindUserInfo(user, $box) {
@@ -73,15 +71,15 @@ $(document).ready(function() {'use strict';
   }
   
   function bindUser(userData, container){
-		var buttons = container.find('.buttons')
-			, userInfo = container.find('.user_info');
-		
-		updateAbilities(userData.consumables, buttons);
-		bindUserInfo(userData, userInfo);
+    var buttons = container.find('.buttons')
+      , userInfo = container.find('.user_info');
+    
+    updateAbilities(userData.attacks, buttons);
+    bindUserInfo(userData, userInfo);
   }
   
   //================= code ==================
-	
+  
   // initializing codemirror hakadoo keyMapping
   $.CodeMirror.keyMap.hakadoo = {
     'Ctrl-Enter': function(cm) {
@@ -96,7 +94,6 @@ $(document).ready(function() {'use strict';
     matchBrackets: true,
     onChange: function(e) {
       var text = userCode.getValue();
-      $.console.log('sending text', text);
       socket.emit('textEntered', {
         text: text
       });
@@ -122,19 +119,20 @@ $(document).ready(function() {'use strict';
   });
 
   leftButtons.find('.swap').click(function() {
-    if(useAbility(gameData.user.consumables, 'swap', leftButtons.find('.swap'))) {
+    if(useAbility(gameData.user.attacks, 'swap', leftButtons.find('.swap'))) {
       socket.emit('swap');
     }
   });
 
-  leftButtons.find('.remove').click(function() {
-    if(useAbility(gameData.user.consumables, 'remove', leftButtons.find('.remove'))) {
-      socket.emit('remove');
+  leftButtons.find('.nuke').click(function() {
+    if(useAbility(gameData.user.attacks, 'nuke', leftButtons.find('.nuke'))) {
+      socket.emit('nuke');
     }
   });
 
   leftButtons.find('.peek').click(function() {
-    if(useAbility(gameData.user.consumables, 'peek', leftButtons.find('.peek'))) {
+    if(useAbility(gameData.user.attacks, 'peek', leftButtons.find('.peek'))) {
+      console.log('---> *** :)', opponentText);
       opponentCode.setValue(opponentText);
       setTimeout(function() {
         opponentCode.setValue(censor(opponentText));
@@ -148,34 +146,37 @@ $(document).ready(function() {'use strict';
   e.preventDefault();
   });
 
-  // socket event handlers
 
+  //================= socket listeners ==================
   socket.on('peek', function() {
-    useAbility(gameData.opponent.consumables, 'peek', rightButtons.find('.peek'));
+    console.log('attack: peek');
+    useAbility(gameData.opponent.attacks, 'peek', rightButtons.find('.peek'));
   });
 
   socket.on('swap', function() {
+    console.log('attack: swap');
     var text = userCode.getValue().split(''), swap = Math.floor(Math.random() * text.length - 1), holder = text[swap];
 
-    useAbility(gameData.opponent.consumables, 'swap', rightButtons.find('.swap'));
+    useAbility(gameData.opponent.attacks, 'swap', rightButtons.find('.swap'));
     text[swap] = text[swap + 1];
     text[swap + 1] = holder;
     userCode.setValue(text.join(''));
   });
 
-  socket.on('remove', function() {
+  socket.on('nuke', function() {
+    console.log('attack: nuke');
     var lines = userCode.getValue().split('\n')
       , killLine = Math.floor(Math.random() * lines.length)
       , newText = lines.filter(function(line, i) {
-		      return i !== killLine;
-		    }).join('\n');
+          return i !== killLine;
+        }).join('\n');
 
-    useAbility(gameData.opponent.consumables, 'remove', rightButtons.find('.remove'));
+    useAbility(gameData.opponent.attacks, 'nuke', rightButtons.find('.nuke'));
     userCode.setValue(newText);
   });
 
   socket.on('textUpdate', function(data) {
-    $.console.log('textUpdate' + data.text);
+    console.log('got text update');
     opponentText = data.text;
     opponentCode.setValue(censor(data.text));
   });
@@ -190,21 +191,17 @@ $(document).ready(function() {'use strict';
     var timer;
         
     gameData.opponent = data.opponent;
-    gameData.user = data.me;
+    gameData.user = data.user;
     gameData.elapsed = 0;
     gameData.limit = 5 * 60;
-    
-    // add the consumable numbers to the user data object    
-    gameData.user.consumables = $.extend({}, defaultConsumables);
-    gameData.opponent.consumables = $.extend({}, defaultConsumables);
-    
+ 
     // set the current question
     gameData.question = data.question;
     
     function formatTime(remaining){
-			return $.hackadoo.utils.zeroPad(Math.floor(remaining/60), 2) + ':' + $.hackadoo.utils.zeroPad(remaining % 60, 2);
-		}
-    
+      return $.hackadoo.utils.zeroPad(Math.floor(remaining/60), 2) + ':' + $.hackadoo.utils.zeroPad(remaining % 60, 2);
+    }
+  
     // setting the challenge text
     $('#challenge_text').text(gameData.question.question);
     
@@ -222,33 +219,33 @@ $(document).ready(function() {'use strict';
       }
     }, 1000);
 
-		// setting user profile info
+    // setting user profile info
     bindUser(gameData.user, leftContainer);
     bindUser(gameData.opponent, rightContainer);
 
-    // Set up function header
-    userCode.setValue('function(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
-    
-		
+    // Set up initial text for user and opponent
+    opponentText = data.opponentText;
+    userCode.setValue(data.text);
+    opponentCode.setValue(censor(opponentText));
   });
 
   socket.on('lose', function() {
-		$.fancybox('<h1>You Lose!</h1>');
+    $.fancybox('<h1>You Lose!</h1>');
     $('#console').prepend('<li>You lose!</li>');
   });
   
   // if they cheat lets get their help in making hackadoo better!
   socket.on('cheating', function(data){
-		$.fancybox(data.msg);
+    $.fancybox(data.msg);
   });
   
   // response from user event
   socket.on('user:compile', function(data){
-		if(data.worked){
-			$.fancybox('<h1>You Win!</h1>');
-			$('#console').prepend('<li>You Win!</li>');
-		}else{
-			$('#console').prepend('<li>Failed to pass unit tests</li>');
-		}
+    if(data.worked){
+      $.fancybox('<h1>You Win!</h1>');
+      $('#console').prepend('<li>You Win!</li>');
+    }else{
+      $('#console').prepend('<li>Failed to pass unit tests</li>');
+    }
   });
 });

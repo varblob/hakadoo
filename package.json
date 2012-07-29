@@ -1,12 +1,12 @@
 {
   "description": "A competitive, realtime coding game",
   "name": "Hackadoo",
-  "version": "0.0.0-14",
+  "version": "0.0.0-22",
   "private": false,
   "dependencies": {
     "union": "0.1.x",
     "flatiron": "0.2.x",
-    "resourceful-mongo": "https://github.com/varblob/resourceful-mongo/tarball/master",
+    "mongoose": "3.0.x",
     "oauth": "0.9.x",
     "async": "0.1.x",
     "mkdirp": "0.3.x",
@@ -14,7 +14,8 @@
     "connect": "2.3.0",
     "director": "https://github.com/flatiron/director/tarball/master",
     "request": "2.9.x",
-    "ecstatic": "0.1.x"
+    "ecstatic": "0.1.x",
+    "redis": "0.7.x"
   },
   "subdomain": "hackadoo",
   "scripts": {
