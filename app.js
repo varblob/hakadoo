@@ -157,7 +157,7 @@ function setUpSocketIO() {
 
     // Upon disconnect, close the user's channel
     socket.on('disconnect', function() {
-      app.pubsub.unsubscribe()
+      app.pubsub.unsubscribe(userID);
     });
 
     (paths.sockets[path] || function() {}).call({
