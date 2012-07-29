@@ -79,7 +79,6 @@ body {
 #call-to-action {
   background-color: white;
   border-radius: 4px;
-  height: 400px;
   margin-left: -15px;
   margin-top: 20px;
   padding: 15px;
@@ -100,6 +99,17 @@ body {
   margin-left: 10px;
   line-height: 1.5em;
   font-family: Arial, sans-serif;
-  font-size: 13px;
-  color: #3B3838;
+  font-size: .98em;
+  color: #5F5F5F;
+}
+
+#call-to-action a {
+  color: #5F5F5F;
+  font-weight: bold;
+  border-bottom: 1px solid #C7BF86;
+  text-decoration: none;
+}
+
+#call-to-action a:hover {
+  border-bottom: 1px solid #386895;
 }

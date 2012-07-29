@@ -10,21 +10,16 @@
 
     // Quick POC for cursor blink
     var $cursorBlink = $('.cursor-blink')
-      , hover;
+      , timeoutID;
 
     $('#title')
       .mouseenter(function() {
-        hover = true;
         $cursorBlink.addClass('blink-on');
 
         (function blink() { 
-          setTimeout(function() {
-            console.log('going');
-            if (!hover) return;
-
+          timeoutID = setTimeout(function() {
             $cursorBlink.each(function() { 
               if ($(this).hasClass('blink-on')) {
-                console.log('yes');
                 $(this).removeClass('blink-on');
               } else {
                 $(this).addClass('blink-on');         
@@ -36,7 +31,7 @@
       })
       .mouseleave(function() {
         $cursorBlink.removeClass('blink-on');
-        hover = false;
+        clearTimeout(timeoutID);
       });
 
     // Bubble animation
