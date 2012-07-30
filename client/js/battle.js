@@ -100,7 +100,8 @@ $(document).ready(function() {'use strict';
     },
     keyMap: 'hakadoo',
     theme: 'night',
-    autofocus: true
+    autofocus: true,
+    smartIndent: false
   });
 
   opponentCode = $.CodeMirror.fromTextArea(document.getElementById("opponent_code"), {
