@@ -35,7 +35,7 @@ $(document).ready(function() {'use strict';
   }
 
   function censor(text) {
-    return text.replace(/\w/g, '01');
+    return text.replace(/\w/g, '\u25A0');
   }
 
   // user data related
