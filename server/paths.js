@@ -7,6 +7,7 @@ exports.routes = {
   '/login': { get: login.initiate }
 , '/callback': { get: login.callback }
 , '/logout': { get: login.logout }
+//, '/u/:twitterHandle': { get: undefined }
 };
 
 // Socket.io listeners
