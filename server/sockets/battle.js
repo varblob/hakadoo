@@ -27,9 +27,9 @@ module.exports = function(socket) {
     Users.findOne({_id: opponentID}, this.e(function(opponent) {
       Users.findOne({_id: userID}, this.e(function(user) {
         socket.emit('ready', {
-          opponent: opponent
-        , user: user
-        , battle: battle
+          user: user
+        , opponent: opponent
+        , battle: battle.data()
         });
       }));
     }));

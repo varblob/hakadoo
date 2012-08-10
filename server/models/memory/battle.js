@@ -41,6 +41,7 @@ function Battle(data) {
 Battle.startNewBattle = function(userID1, userID2, cb) { 
   var self = this
     , gameStart = Date.now()
+    , gameStop = gameStart + gameDuration
     , questionID = ~~(Math.random() * Questions.length)
     ;
 
@@ -56,6 +57,7 @@ Battle.startNewBattle = function(userID1, userID2, cb) {
     data._id = match._id;
     data.question = Questions[questionID];
     data.gameStart = gameStart;
+    data.gameStop = gameStop;
     data.players = {};
 
     async.parallel([userID1, userID2].map(function(userID) {
@@ -100,16 +102,18 @@ Battle.getBattleForUser = function(userID, cb) {
 
 
 /*
- * Return a JSON representation of the battle object
- * @return (String)
+ * Return an object representing the data of the Battle object. This is helpful
+ * in serialization.
+ * @return (Object)
  */
-Battle.prototype.toJSON = function() {
-  return JSON.stringify({
+Battle.prototype.data = function() {
+  return {
     _id: this._id
   , question: this.question
   , gameStart: this.gameStart
+  , gameStop: this.gameStop
   , players: this.players
-  });
+  };
 };
 
 
@@ -121,6 +125,7 @@ Battle.prototype.update = function(data) {
   this._id = data._id;
   this.question = data.question; 
   this.gameStart = data.gameStart;
+  this.gameStop = data.gameStop;
   this.players = data.players;
 };
 
@@ -130,7 +135,7 @@ Battle.prototype.update = function(data) {
  * @param (Function) cb
  */
 Battle.prototype.save = function(cb) {
-  var asJSON = this.toJSON();
+  var asJSON = JSON.stringify(this.data());
   app.store.hmset('battles', this._id, asJSON, cb);
 };
 
