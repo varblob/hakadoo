@@ -199,6 +199,47 @@
           });
         },*/
     });
+
+
+    /*
+     * The opponent has used the peek attack
+     */
+    socket.on('peek', receiveAttack.bind(this, 'peek'));
+
+
+    /*
+     * The opponent has used the swap attack
+     */
+    socket.on('swap', function() {
+      var text = userCode.getValue().split(''), swap = Math.floor(Math.random() * text.length - 1), holder = text[swap];
+
+      useAbility(gameData.opponent.attacks, 'swap', rightButtons.find('.swap'));
+      text[swap] = text[swap + 1];
+      text[swap + 1] = holder;
+      userCode.setValue(text.join(''));
+    });
+
+    socket.on('nuke', function() {
+      console.log('attack: nuke');
+      var lines = userCode.getValue().split('\n')
+        , killLine = Math.floor(Math.random() * lines.length)
+        , newText = lines.filter(function(line, i) {
+            return i !== killLine;
+          }).join('\n');
+
+      useAbility(gameData.opponent.attacks, 'nuke', rightButtons.find('.nuke'));
+      userCode.setValue(newText);
+    });
+
+    socket.on('textUpdate', function(data) {
+      console.log('got text update');
+      opponentText = data.text;
+      opponentCode.setValue(censor(data.text));
+    });
+
+
+
+
   });
 
 
@@ -222,9 +263,20 @@
     if (playerAttacks[attackName] > 0) {
       playerAttacks[attackName]--;
       socket.emit(attackName);
-      templateAttackButtons(playerAttacks, sections.buttons.$user);
+      templateAttackButtons(playerAttacks, 'user');
     }
   }
+
+  /*
+   * Update the game to reflect that the opponent has performed an attack
+   * @param (String) attackName
+   */
+  function receiveAttack(attackName) {
+    var opponentAttacks = battle.players[opponent._id].attacks;
+    opponentAttacks[attackName]--;
+    templateAttackButtons(opponentAttacks);
+  }
+
 })();
 
 
@@ -306,36 +358,4 @@
 
 
     //================= socket listeners ==================
-    socket.on('peek', function() {
-      console.log('attack: peek');
-      useAbility(gameData.opponent.attacks, 'peek', rightButtons.find('.peek'));
-    });
-
-    socket.on('swap', function() {
-      console.log('attack: swap');
-      var text = userCode.getValue().split(''), swap = Math.floor(Math.random() * text.length - 1), holder = text[swap];
-
-      useAbility(gameData.opponent.attacks, 'swap', rightButtons.find('.swap'));
-      text[swap] = text[swap + 1];
-      text[swap + 1] = holder;
-      userCode.setValue(text.join(''));
-    });
-
-    socket.on('nuke', function() {
-      console.log('attack: nuke');
-      var lines = userCode.getValue().split('\n')
-        , killLine = Math.floor(Math.random() * lines.length)
-        , newText = lines.filter(function(line, i) {
-            return i !== killLine;
-          }).join('\n');
-
-      useAbility(gameData.opponent.attacks, 'nuke', rightButtons.find('.nuke'));
-      userCode.setValue(newText);
-    });
-
-    socket.on('textUpdate', function(data) {
-      console.log('got text update');
-      opponentText = data.text;
-      opponentCode.setValue(censor(data.text));
-    });
   */
