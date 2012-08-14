@@ -12,6 +12,12 @@
   // Opponent of the user
   var opponent;
 
+  // Game options
+  var options = {
+    censorChar: '\u25A0'
+  , peekTime: 1500
+  }
+
 
   /*
    * Static class for handling all dynamic DOM manipulation
@@ -58,6 +64,10 @@
         , theme: 'night'
         , autofocus: true
         , smartIndent: false
+        , onChange: function(e) {
+            var text = Template.codeMirrors.user.getValue();
+            socket.emit('textEntered', {text: text});
+          }
         })
       , opponent: $.CodeMirror.fromTextArea($("#opponent_code").get(0), {
           lineNumbers: true
@@ -144,6 +154,7 @@
      */
     start: function(seconds, onZero) {
       this.seconds = seconds;
+      this.onZero = onZero;
       this.timer = setInterval(this._step.bind(this), 1000);
     }
 
@@ -154,7 +165,7 @@
 
       if (this.seconds <= 0) {
         clearInterval(this.timer);
-        return onZero();
+        return this.onZero();
       }
 
       this.seconds--;
@@ -167,6 +178,11 @@
 
     Template.initSections();
     Template.initCodeMirrors();
+
+    // Disable cut, copy, and paste in the CodeMirror
+    $('#user_code, #opponent_code').live('cut copy paste', function(e) {
+      e.preventDefault();
+    });
 
     /*
      * Receive initial data from the server about the battle and the players. 
@@ -186,18 +202,11 @@
 
       // Set up inital user and opponent text
       Template.codeMirrors.user.setValue(battle.players[user._id].text);
-      Template.codeMirrors.opponent.setValue(battle.players[opponent._id].text);
+      Template.codeMirrors.opponent.setValue(censor(battle.players[opponent._id].text));
       
       // Start the game timer
       var timeRemaining = ~~((battle.gameStop - Date.now()) / 1000); 
-      Timer.start(timeRemaining);
-
-      /* , onChange: function(e) {
-          var text = userCode.getValue();
-          socket.emit('textEntered', {
-            text: text
-          });
-        },*/
+      Timer.start(timeRemaining, function() {});
     });
 
 
@@ -211,35 +220,71 @@
      * The opponent has used the swap attack
      */
     socket.on('swap', function() {
-      var text = userCode.getValue().split(''), swap = Math.floor(Math.random() * text.length - 1), holder = text[swap];
+      var text = Template.codeMirrors.user.getValue().split('')
+        , swap = Math.floor(Math.random() * text.length - 1)
+        , holder = text[swap]
+        ;
 
-      useAbility(gameData.opponent.attacks, 'swap', rightButtons.find('.swap'));
       text[swap] = text[swap + 1];
       text[swap + 1] = holder;
-      userCode.setValue(text.join(''));
+      Template.codeMirrors.user.setValue(text.join(''));
+      receiveAttack('swap');
     });
 
+
+    /*
+     * The opponent has used the nuke attack
+     */
     socket.on('nuke', function() {
-      console.log('attack: nuke');
-      var lines = userCode.getValue().split('\n')
+      var lines = Template.codeMirrors.user.getValue().split('\n')
         , killLine = Math.floor(Math.random() * lines.length)
         , newText = lines.filter(function(line, i) {
             return i !== killLine;
           }).join('\n');
 
-      useAbility(gameData.opponent.attacks, 'nuke', rightButtons.find('.nuke'));
-      userCode.setValue(newText);
+      Template.codeMirrors.user.setValue(newText);
+      receiveAttack('nuke');
     });
 
+
+    /*
+     * The opponent has entered text
+     */
     socket.on('textUpdate', function(data) {
-      console.log('got text update');
-      opponentText = data.text;
-      opponentCode.setValue(censor(data.text));
+      var opponentText = battle.players[opponent._id].text = data.text;
+      Template.codeMirrors.opponent.setValue(censor(opponentText));
     });
 
 
+    /*
+     * Use the swap attack
+     */
+    Template.sections.buttons.user.find('.swap')
+      .click(useAttack.bind(this, 'swap'));
 
 
+    /*
+     * Use the nuke attack
+     */
+    Template.sections.buttons.user.find('.nuke')
+      .click(useAttack.bind(this, 'nuke'));
+
+
+    /*
+     * Use the peek attack
+     */
+    Template.sections.buttons.user.find('.peek').click(function() {
+
+      if (useAttack('peek')) {
+        var opponentText = battle.players[opponent._id].text;
+        Template.codeMirrors.opponent.setValue(opponentText);
+
+        setTimeout(function() {
+          var opponentText = battle.players[opponent._id].text;
+          Template.codeMirrors.opponent.setValue(censor(opponentText));
+        }, options.peekTime);
+      }
+    });
   });
 
 
@@ -249,13 +294,14 @@
    * @return (String)
    */
   function censor(text) {
-    return text.replace(/\w/g, '\u25A0');
+    return text.replace(/\w/g, options.censorChar);
   }
 
 
   /*
    * Perform the given attack, alerting the server and updating the DOM
    * @param (String) attackName
+   * @return (Boolean)
    */
   function useAttack(attackName) {
     var playerAttacks = battle.players[user._id].attacks; 
@@ -263,8 +309,11 @@
     if (playerAttacks[attackName] > 0) {
       playerAttacks[attackName]--;
       socket.emit(attackName);
-      templateAttackButtons(playerAttacks, 'user');
+      Template.attackButtons(playerAttacks, 'user');
+      return true;
     }
+
+    return false;
   }
 
   /*
@@ -274,7 +323,7 @@
   function receiveAttack(attackName) {
     var opponentAttacks = battle.players[opponent._id].attacks;
     opponentAttacks[attackName]--;
-    templateAttackButtons(opponentAttacks);
+    Template.attackButtons(opponentAttacks);
   }
 
 })();
@@ -319,43 +368,10 @@
     
     //================= code ==================
     
-
-    // init questions
-    $('#challenge_text').text("Waiting for an opponent...");
-
     // binding click handlers
     $('#compile_button').click(function() {
       compileHandler();
     });
-
-    leftButtons.find('.swap').click(function() {
-      if(useAbility(gameData.user.attacks, 'swap', leftButtons.find('.swap'))) {
-        socket.emit('swap');
-      }
-    });
-
-    leftButtons.find('.nuke').click(function() {
-      if(useAbility(gameData.user.attacks, 'nuke', leftButtons.find('.nuke'))) {
-        socket.emit('nuke');
-      }
-    });
-
-    leftButtons.find('.peek').click(function() {
-      if(useAbility(gameData.user.attacks, 'peek', leftButtons.find('.peek'))) {
-        console.log('---> *** :)', opponentText);
-        opponentCode.setValue(opponentText);
-        setTimeout(function() {
-          opponentCode.setValue(censor(opponentText));
-        }, 1500);
-        socket.emit('peek');
-      }
-    });
-
-    // Disable Cut, Copy and Paste in the Code Mirror
-    $(".CodeMirror*").live("cut copy paste", function(e) {
-    e.preventDefault();
-    });
-
 
     //================= socket listeners ==================
   */
