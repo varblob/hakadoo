@@ -11,39 +11,48 @@ var app = require('flatiron').app
 var waitingInterval = 5000 // ms
 setInterval(matchMaker, waitingInterval);
 
-module.exports = function(socket) {
- 
+module.exports = function(socket) { 
   var userID = socket.handshake.session.userID;
 
-  socket.on('joinWaitingPool', joinWaitingPool.bind(this, userID));
-  socket.on('postChallenge', postChallenge.bind(this, userID));
+  Battle.getBattleForUser(userID, this.e(function(battle) {
+  
+    // If the user is already in a battle, send him to the battle page
+    if (battle) {
+      socket.emit('startBattle');
+      return;
+    }
 
-  // Retrieve the user information and give it to the client.
-  Users.findOne({_id: userID}, this.e(function(user) {
-    socket.emit('profile', user);
-  }));
+    socket.on('joinWaitingPool', joinWaitingPool.bind(this, userID));
+    socket.on('postChallenge', postChallenge.bind(this, userID));
 
-  // Give the client a list of active users on the site
-  app.store.smembers('onlineUsers', this.e(function(userIDs) {
-    userIDs.forEach(function(userID) {
+    // Retrieve the user information and give it to the client.
+    Users.findOne({_id: userID}, this.e(function(user) {
+      socket.emit('profile', user);
+    }));
+
+    // Give the client a list of active users on the site
+    app.store.smembers('onlineUsers', this.e(function(userIDs) {
+      userIDs.forEach(function(userID) {
+        userLoggedIn(userID, socket);
+      });
+    }));
+
+    app.messages['global'].on('userLoggedIn', function(data) {
+      var userID = data.userID;
       userLoggedIn(userID, socket);
     });
+
+    app.messages['global'].on('userLoggedOut', function(data) {
+      socket.emit('userLoggedOut', {userID: userID});
+    });
+
+    // Listen for the startBattle message, indicating an opponent has been
+    // registered and the battle data has been prepared
+    app.messages[userID].on('startBattle', function() {
+      socket.emit('startBattle');
+    });
+  
   }));
-
-  app.messages['global'].on('userLoggedIn', function(data) {
-    var userID = data.userID;
-    userLoggedIn(userID, socket);
-  });
-
-  app.messages['global'].on('userLoggedOut', function(data) {
-    socket.emit('userLoggedOut', {userID: userID});
-  });
-
-  // Listen for the startBattle message, indicating an opponent has been
-  // registered and the battle data has been prepared
-  app.messages[userID].on('startBattle', function() {
-    socket.emit('startBattle');
-  })
 };
 
 
