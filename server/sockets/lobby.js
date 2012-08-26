@@ -2,6 +2,7 @@ var app = require('flatiron').app
   , async = require('async')
   , Set = require('Set')
   , Users = require('../models/users')
+  , Matches = require('../models/matches')
   , Battle = require('../models/memory/battle')
   , Questions = require('../models/memory/questions')
   ;
@@ -12,7 +13,8 @@ setInterval(matchMaker, waitingInterval);
 
 module.exports = function(socket) {
  
-  var userID = socket.handshake.session.userID;   
+  var userID = socket.handshake.session.userID;
+
   socket.on('joinWaitingPool', joinWaitingPool.bind(this, userID));
   socket.on('postChallenge', postChallenge.bind(this, userID));
 
@@ -149,8 +151,12 @@ function userLoggedIn(userID, socket, cb) {
   Users.findOne({_id: userID}, function(err, user) {
     if (err) return cb(err);
 
-    socket.emit('userLoggedIn', {
-      user: user
+    // Determine how many battles the user has played
+    Matches.find({playerIDs: userID}, function(err, matches) {
+      user._doc.battles = matches.length;
+      socket.emit('userLoggedIn', {
+        user: user
+      });
     });
   });
 }
