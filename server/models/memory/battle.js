@@ -7,8 +7,8 @@
  */
 var app = require('flatiron').app
   , async = require('async')
-  , Questions = require('./questions')
   , Matches = require('../matches')
+  , Questions = require('./questions')
   , gameDuration = 5 * 60 * 1000 // ms
   , initialAttacks = {
       peek: 3
@@ -50,12 +50,13 @@ Battle.startNewBattle = function(userID1, userID2, cb) {
   Matches.create({
     matchDate: new Date(gameStart)
   , questionID: questionID
+  , playerIDs: [userID1, userID2]
   }, function(err, match) {
     if (err) return cb(err);
 
     var data = {};
     data._id = match._id;
-    data.question = Questions[questionID];
+    data.questionID = questionID; 
     data.gameStart = gameStart;
     data.gameStop = gameStop;
     data.players = {};
@@ -91,6 +92,9 @@ Battle.getBattleForUser = function(userID, cb) {
     if (err) return cb(err);
     battleID = battleID[0];
 
+    // Callback a null battle if the user isn't currently in a battle
+    if (!battleID) return cb(null, null);
+
     app.store.hmget('battles', battleID, function(err, battleJSON) {
       if (err) return cb(err);
       battleJSON = battleJSON[0];
@@ -109,7 +113,7 @@ Battle.getBattleForUser = function(userID, cb) {
 Battle.prototype.data = function() {
   return {
     _id: this._id
-  , question: this.question
+  , questionID: this.questionID
   , gameStart: this.gameStart
   , gameStop: this.gameStop
   , players: this.players
@@ -123,7 +127,7 @@ Battle.prototype.data = function() {
  */
 Battle.prototype.update = function(data) {
   this._id = data._id;
-  this.question = data.question; 
+  this.questionID = data.questionID; 
   this.gameStart = data.gameStart;
   this.gameStop = data.gameStop;
   this.players = data.players;
@@ -151,6 +155,41 @@ Battle.prototype.fetch = function(cb) {
     cb(null);
   });
 }
+
+
+/*
+ * End the battle, updating the data store as appropriate
+ * @param (String) winnerID
+ * @param (Function) cb
+ */
+Battle.prototype.end = function (winnerID, cb) {
+  var self = this;
+
+  Matches.findOne({_id: self._id}, function(err, match) {
+    if (err) return cb(err);
+
+    // If the match has already ended, do nothing
+    if (typeof match.winnerID == 'undefined') return cb();
+
+    // Record the battle outcome in the DB
+    match.winnerID = winnerID;
+    match.save(function(err, match) {
+      if (err) return cb(err);
+      
+      // Remove the users from the user id to battle id lookup
+      async.parallel(Object.keys(self.players).map(function(playerID) {
+        return function(cb) {
+          app.store.hdel('userToBattle', playerID, cb);
+        };
+      }), function(err) {
+        if (err) return cb(err);
+
+        // Remove the battle information
+        app.store.hdel('battles', self._id, cb);
+      })
+    });
+  });
+};
 
 
 /*

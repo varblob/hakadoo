@@ -30,6 +30,8 @@
     initSections: function() {
       this.sections = {
         challengeText: $('#challenge_text')
+      , compile: $('#compile_button') 
+      , console: $('#console') 
       , timer: $('#timer')
       , buttons: {
           user: $('.buttons.left')
@@ -55,6 +57,10 @@
         },
         'fallthrough': ['basic']
       };
+ 
+      $('#user_code, #opponent_code').live('cut copy paste', function(e) {
+        e.preventDefault();
+      });
 
       this.codeMirrors = {
         user: $.CodeMirror.fromTextArea($("#user_code").get(0), {
@@ -84,7 +90,6 @@
      */
   , staticInformation: function() {
       this.sections.challengeText.text(battle.question.question);
-
 
       // Pair the user and opponent with their respective info box elements
       [
@@ -128,7 +133,7 @@
      * @param (Object) attacks
      * @param (String) userOrOpponent
      */
-  , attackButtons: function(attacks, userOrOpponent) { 
+  , attackButtons: function(attacks, userOrOpponent) {
       var $buttons = this.sections.buttons[userOrOpponent];
 
       Object.keys(attacks).forEach(function(attackName) {
@@ -140,7 +145,8 @@
     }
   };
 
-  
+ 
+
   /*
    * The game countdown clock. This is responsible for initializing the 
    * countdown, updating it over time, and ending the game when it reaches 0.
@@ -162,8 +168,10 @@
      * Account for a single elpased second; update the timer accordingly
      */
   , _step: function() {
+      console.log('steppin');
 
       if (this.seconds <= 0) {
+        console.log('>', this.timer);
         clearInterval(this.timer);
         return this.onZero();
       }
@@ -179,11 +187,6 @@
     Template.initSections();
     Template.initCodeMirrors();
 
-    // Disable cut, copy, and paste in the CodeMirror
-    $('#user_code, #opponent_code').live('cut copy paste', function(e) {
-      e.preventDefault();
-    });
-
     /*
      * Receive initial data from the server about the battle and the players. 
      * Set up the game view.
@@ -194,6 +197,7 @@
       user = data.user;
       opponent = data.opponent;
       battle = data.battle;
+      battle.question = data.question;
 
       // Perform initial templating
       Template.staticInformation();
@@ -206,7 +210,9 @@
       
       // Start the game timer
       var timeRemaining = ~~((battle.gameStop - Date.now()) / 1000); 
-      Timer.start(timeRemaining, function() {});
+      Timer.start(timeRemaining, function() {
+        socket.emit('timeout'); // XXX ought to be handled server-side
+      });
     });
 
 
@@ -257,6 +263,42 @@
 
 
     /*
+     * The opponent has won
+     */
+    socket.on('lose', function() {
+      $.fancybox('<h1>You Lose!</h1>');
+    });
+
+
+    /*
+     * The server has finished evaluating a solution attempt
+     */
+    socket.on('compile', function(data) {
+      if (data.success) {
+        $.fancybox('<h1>You Win!</h1>');
+      } else {
+        $('#console').prepend('<li>Failed to pass unit tests</li>');
+      }
+    });
+
+
+    /*
+     * If they cheat, lets get their help in making Hackadoo better!
+     */
+    socket.on('cheating', function() {
+      $.fancybox('[cheating message]');
+    });
+
+
+    /*
+     * Redirect to a different page
+     */
+    socket.on('redirect', function(data) {
+      window.location = data.url;
+    });
+
+
+    /*
      * Use the swap attack
      */
     Template.sections.buttons.user.find('.swap')
@@ -285,7 +327,16 @@
         }, options.peekTime);
       }
     });
-  });
+
+
+    /*
+     * Attempt a solution
+     */
+    Template.sections.compile.click(function() {
+      var solution = Template.codeMirrors.user.getValue();
+      compileHandler(solution);
+    });
+  }); 
 
 
   /*
@@ -316,6 +367,7 @@
     return false;
   }
 
+
   /*
    * Update the game to reflect that the opponent has performed an attack
    * @param (String) attackName
@@ -323,55 +375,26 @@
   function receiveAttack(attackName) {
     var opponentAttacks = battle.players[opponent._id].attacks;
     opponentAttacks[attackName]--;
-    Template.attackButtons(opponentAttacks);
+    Template.attackButtons(opponentAttacks, 'opponent');
   }
-
-})();
 
 
   /*
-    socket.on('lose', function() {
-      $.fancybox('<h1>You Lose!</h1>');
-      $('#console').prepend('<li>You lose!</li>');
-    });
-    
-    // if they cheat lets get their help in making hackadoo better!
-    socket.on('cheating', function(data){
-      $.fancybox(data.msg);
-    });
-    
-    // response from user event
-    socket.on('user:compile', function(data){
-      if(data.worked){
-        $.fancybox('<h1>You Win!</h1>');
-        $('#console').prepend('<li>You Win!</li>');
-      }else{
-        $('#console').prepend('<li>Failed to pass unit tests</li>');
-      }
-    });
- 
-    //=============== functions ==================
-    function compileHandler() {
-      var worked = false
-        , outputs;
+   * Runs the given solution on all of the test cases for the given question, 
+   * then sends the outputs to the server for validation.
+   * @param (String) solution
+   */
+  function compileHandler(solution) {
+    try {
+      var outputs = $.hackadoo.validator
+        .generateOutputs(battle.question, solution);
+      console.log(outputs);
+      socket.emit('compile', {answers: outputs});
+      Template.sections.console.prepend('<li>Running tests...</li>');
+    } catch(e) {
+      Template.sections.console
+        .prepend('<li>' + e.name + ': ' + e.message + '</li>');  
+    }
+  } 
 
-      try {
-        outputs = $.hakadoo.validator.generateOutputs(gameData.question, userCode.getValue());
-        socket.emit('compile', {outputs:outputs, worked:true});
-      } catch(e) {
-        $('#console').prepend('<li>' + e.name + ': ' + e.message + '</li>');
-        socket.emit('compile', {
-          worked: false
-        });
-      }    
-    } 
-    
-    //================= code ==================
-    
-    // binding click handlers
-    $('#compile_button').click(function() {
-      compileHandler();
-    });
-
-    //================= socket listeners ==================
-  */
+})();

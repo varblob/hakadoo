@@ -6,7 +6,7 @@ module.exports = [
   {
     question: 'Write a function that sums the numbers 1 to n'
   , example: 'run(5) -> 15'
-  , answer: function(n){
+  , answer: function(n) {
       if (isNaN(n)) {
         return false;
       }

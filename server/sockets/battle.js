@@ -3,7 +3,9 @@ var app = require('flatiron').app
   , Set = require('Set')
   , oop = require('../util/oop')
   , Users = require('../models/users')
+  , Matches = require('../models/matches')
   , Battle = require('../models/memory/battle')
+  , Questions = require('../models/memory/questions')
   ;
 
 
@@ -21,7 +23,8 @@ module.exports = function(socket) {
     }
 
     var players = Object.keys(battle.players)
-      , opponentID = players[1 ^ players.indexOf(userID)];
+      , opponentID = players[1 ^ players.indexOf(userID)]
+      , question = Questions[battle.questionID];
 
     // Send the players' profile information
     Users.findOne({_id: opponentID}, this.e(function(opponent) {
@@ -30,6 +33,7 @@ module.exports = function(socket) {
           user: user
         , opponent: opponent
         , battle: battle.data()
+        , question: question
         });
       }));
     }));
@@ -70,6 +74,49 @@ module.exports = function(socket) {
         battle.players[opponentID].attacks[attackName]--;
         socket.emit(attackName);
       });
+    });
+
+
+    /*
+     * Verifying a proposed solution
+     */
+    socket.on('compile', function(data) {
+      var userAnswers = data.answers;
+      var rightAnswers = question.alwaysTest.map(function(input) {
+        return question.answer(input);
+      });
+
+      for (var i=0; i<rightAnswers.length; i++) {
+        if (userAnswers[i] !== rightAnswers[i]) {
+
+          // The solution is incorrect
+          socket.emit('compile', {success: false});
+          return;
+        }
+      }
+
+      // The solution is correct
+      socket.emit('compile', {success: true});
+      app.messages(opponentID, 'lose');
+      battle.end(userID, self.e(function() {}));
+    });
+
+
+    /*
+     * The opponent has solved the problem
+     */
+    app.messages[userID].on('lose', function() {
+      socket.emit('lose');
+    });
+
+    
+    /*
+     * The battle has timed out
+     */
+    socket.on('timeout', function(data) {
+      socket.emit('lose');
+      app.messages(opponentID, 'lose');
+      battle.end(null, self.e(function() {}));
     });
   }));
 };

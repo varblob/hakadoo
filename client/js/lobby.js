@@ -5,9 +5,6 @@
 
   $(document).ready(function() {
 
-    // Connect to socket.io
-    var socket = io.connect(window.Array.host);
-
     /*
      * Templating
      */
@@ -18,6 +15,8 @@
     var $battleWait = $('#battle-wait');
     $onlineUserList.children().remove();
 
+    // Connect to socket.io
+    var socket = io.connect(window.Array.host);
 
     /*
      * Element bindings
