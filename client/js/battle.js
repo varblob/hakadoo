@@ -377,6 +377,27 @@
     opponentAttacks[attackName]--;
     Template.attackButtons(opponentAttacks, 'opponent');
   }
+  
+  
+  /*
+   * compile handler helpers 
+   */
+  function _generateOutputs(question, userCode){
+    var attempt = eval('(' + userCode + ')')
+      , outputs = []
+      , i ;
+      
+    // Pass all the required tests
+    for(i = 0; i < question.alwaysTest.length; i++){
+      outputs.push(_getOutput(attempt,question.alwaysTest[i]));        
+    }
+    return outputs;
+  }
+  
+  function _getOutput(f, input){
+  	trace('hi');
+  	return f(input);
+  }
 
 
   /*
@@ -386,8 +407,7 @@
    */
   function compileHandler(solution) {
     try {
-      var outputs = $.hackadoo.validator
-        .generateOutputs(battle.question, solution);
+      var outputs = _generateOutputs(battle.question, solution);
       console.log(outputs);
       socket.emit('compile', {answers: outputs});
       Template.sections.console.prepend('<li>Running tests...</li>');

@@ -35,22 +35,28 @@ h1.title {
     max-height: 400px;
 }
 
-#console {
+.console {
     width: auto;
     height: 100px;
-    margin: -18px 0 0;
     text-align: left;
     padding: 5px;
     background: white;
     overflow: auto;
-    height: 100px;
     background-color: white;
     border-top: 1px solid silver;
 }
 
-#console li {
-    color: red;
+.console li {
+    color: black;
     padding: 3px;
+}
+
+.console li.error{
+	color: red;
+}
+
+.console li.correct{
+	color: green;
 }
 
 #challenge_text {
@@ -65,25 +71,23 @@ h1.title {
     width:900px;
 }
 
-#timer, #compile_button { 
+#timer{ 
 	border: 1px solid white; 
 }
 
 #timer {
     width: 170px;
-    margin: 0 auto;
     text-align: center;
     font-size: 40px;
     font-weight: bolder;
     color: white;
     background: #133969;
-    position: relative;
-    top: 20px;
     padding: 5px 20px;
     border-radius: 50px;
+    float:right;
 }
 
-#compile_button {
+/*#compile_button {
     width: 170px;
     margin: 0px auto 20px auto;
     text-align: center;
@@ -95,7 +99,7 @@ h1.title {
     top: -10px;
     padding: 5px 20px;
     border-radius: 15px;
-}
+}*/
 
 #compile_shortcut {
     display: block;
@@ -105,7 +109,7 @@ h1.title {
 
 /* attack buttons */
 
-.attack_button {
+.attack_button, #compile_button{
     width: 50px;
     height: 50px;
     padding: 0px;
@@ -117,7 +121,16 @@ h1.title {
     background: white;
     text-align: center;
     width:auto;
-    width:300px;
+    min-width:300px;
+}
+
+.buttons .button-container{
+	display:inline-block;
+}
+
+.shortcut{
+	color: #AAA;
+	font-size:80%;
 }
 
 .buttons button {
@@ -154,21 +167,17 @@ button, .button, .link {
     border: 1px #133969 solid;
     margin: 0 auto;
     background:#A5C4EC;
-   
 }
 
 .user_info {
     width: 100px;
     text-align: center;
-    position: relative;
-    top: -20px;
-    background: #133969;
     border-radius:8px;
-    padding:20px 0 5px;
+    padding:15px 0 5px;
 }
 
 .user_info a, .avatar{
-	color: white;
+	color: #133969;
 }
 
 .top{
@@ -191,14 +200,15 @@ button, .button, .link {
 
 #right_container {
   float: right;
+  width:40%;
 }
 
 #left_container {
   float: left;
+  width:60%;
 }
 
 #left_container, #right_container {
-    width: 50%;
     margin: 0px;
     padding: 0px;
     background-color: white;

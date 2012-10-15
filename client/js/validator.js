@@ -9,9 +9,13 @@ jQuery.hackadoo.validator = ( function($) {
       
     // Pass all the required tests
     for(i = 0; i < question.alwaysTest.length; i++){
-      outputs.push(attempt(question.alwaysTest[i]));        
+      outputs.push(_getOutput(attempt,question.alwaysTest[i]));        
     }
     return outputs;
+  }
+  
+  function _getOutput(f, input){
+  	return f(input);
   }
 
   return {
