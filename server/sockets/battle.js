@@ -98,14 +98,14 @@ module.exports = function(socket) {
 	        if (userAnswers[i] !== rightAnswers[i]) {
 	
 	          // The solution is incorrect
-	          socket.emit('user:compile', {success: false});
+	          socket.emit('user:compile', {works: false});
 	          return;
 	        }
 	      }
 				//TODO add random tests
 				
 	      // The solution is correct
-	      socket.emit('user:compile', {success: true});
+	      socket.emit('user:compile', {works: true});
 	      app.messages(opponentID, 'lose');
 	      battle.end(userID, self.e(function() {}));
      	}else{

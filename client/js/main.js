@@ -44,6 +44,21 @@ $(document).ready(function() {'use strict';
     }
     return outputs;
   }
+  
+  function checkAnswer(test, answer){
+  	var i;
+  	if(test instanceof Array){
+  		for(i=0; i<test.length; i++){
+  			if(test[i] !== answer[i]){
+  				return false;
+  			}
+  		}
+  		return true;
+  	}else{
+  		return test === answer;
+  	}
+  	
+  }
 
 	function checkAnswers(answers, trace){
 		var i	
@@ -55,7 +70,7 @@ $(document).ready(function() {'use strict';
 		for(i = 0; i < answers.length; i++){
 			test = gameData.question.alwaysTest[i];
 		  answer = gameData.question.answers[i];
-		  correct = (answer === answers[i]);
+		  correct = checkAnswer(answer, answers[i]);
 		  trace('<div class="'+ (correct ? 'correct' : 'error') + '">' + JSON.stringify(test) + ' -> ' + JSON.stringify(answers[i]) + '</div>');
 		  if(!correct){
 				allCorrect = false;
