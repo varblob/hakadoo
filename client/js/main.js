@@ -44,33 +44,44 @@ $(document).ready(function() {'use strict';
     }
     return outputs;
   }
+
+	function checkAnswers(answers, trace){
+		var i	
+			, allCorrect = true
+			, test
+			, correct
+			, answer;
+			
+		for(i = 0; i < answers.length; i++){
+			test = gameData.question.alwaysTest[i];
+		  answer = gameData.question.answers[i];
+		  correct = (answer === answers[i]);
+		  trace('<div class="'+ (correct ? 'correct' : 'error') + '">' + JSON.stringify(test) + ' -> ' + JSON.stringify(answers[i]) + '</div>');
+		  if(!correct){
+				allCorrect = false;
+		  } 
+		}
+		if(allCorrect){
+			trace('<div class="correct"> PASSED! unit tests</div> ');
+		}else{
+			trace('<div class="error"> FAILED unit tests</div> ');
+		}
+		
+		return allCorrect;
+	}
   
 	function compileHandler() {
     var worked = false
-			, outputs
-			, i
-			, test
-			, correct
-			, allCorrect
-			, answer;
+			, answers
+			, allCorrect;
 
     try {
-      outputs = generateOutputs(gameData.question, userCode.getValue());
-      allCorrect = true;
-      for(i = 0; i < outputs.length; i++){
-				test = gameData.question.alwaysTest[i];
-        answer = gameData.question.answers[i];
-        correct = (answer === outputs[i]);
-        trace('<div class="'+ (correct ? 'correct' : 'error') + '">' + JSON.stringify(test) + ' -> ' + JSON.stringify(outputs[i]) + '</div>');
-        if(!correct){
-					allCorrect = false;
-        } 
-      }
+      answers = generateOutputs(gameData.question, userCode.getValue());
+      allCorrect = checkAnswers(answers, trace);
       if(allCorrect){
-				socket.emit('compile', {answers:outputs, worked:true});
-				trace('<div class="correct"> PASSED! unit tests</div> ');
-      }else{
-      	trace('<div class="error"> FAILED unit tests</div> ');
+				socket.emit('compile', {answers:answers, worked:true});
+      }else{	
+				socket.emit('compile', {answers:answers, worked:false});
       }
       
     } catch(e) {
@@ -292,5 +303,11 @@ $(document).ready(function() {'use strict';
 		}else{
 			trace('<div class="error">FAILED Server Side unit tests </div>');
 		}
+  });
+  
+  socket.on('opponent:compile', function(data){
+		checkAnswers(data.answers, function(text){
+			$('#opponent_console').prepend('<li>' + text + '</li>');
+		});
   });
 });

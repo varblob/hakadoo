@@ -87,24 +87,30 @@ module.exports = function(socket) {
      * Verifying a proposed solution
      */
     socket.on('compile', function(data) {
-      var userAnswers = data.answers;
-      var rightAnswers = question.alwaysTest.map(function(input) {
-        return question.answer(input);
-      });
-
-      for (var i=0; i<rightAnswers.length; i++) {
-        if (userAnswers[i] !== rightAnswers[i]) {
-
-          // The solution is incorrect
-          socket.emit('compile', {success: false});
-          return;
-        }
-      }
-
-      // The solution is correct
-      socket.emit('compile', {success: true});
-      app.messages(opponentID, 'lose');
-      battle.end(userID, self.e(function() {}));
+      var i
+      	, userAnswers = data.answers
+      	, rightAnswers = question.alwaysTest.map(function(input) {
+		        return question.answer(input);
+		      });
+		  // if the client thinks it worked double check
+			if(data.worked){
+	      for(i=0; i<rightAnswers.length; i++) {
+	        if (userAnswers[i] !== rightAnswers[i]) {
+	
+	          // The solution is incorrect
+	          socket.emit('user:compile', {success: false});
+	          return;
+	        }
+	      }
+				//TODO add random tests
+				
+	      // The solution is correct
+	      socket.emit('user:compile', {success: true});
+	      app.messages(opponentID, 'lose');
+	      battle.end(userID, self.e(function() {}));
+     	}else{
+     		app.messages(opponentID, 'opponent:compile', data);
+     	}
     });
 
 
@@ -113,6 +119,10 @@ module.exports = function(socket) {
      */
     app.messages[userID].on('lose', function() {
       socket.emit('lose');
+    });
+    
+    app.messages[userID].on('opponent:compile', function(data){
+    	socket.emit('opponent:compile', data);
     });
 
     
