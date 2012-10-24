@@ -68,7 +68,11 @@ $(document).ready(function() {'use strict';
       }
       if(allCorrect){
 				socket.emit('compile', {answers:outputs, worked:true});
+				trace('<div class="correct"> PASSED! unit tests</div> ');
+      }else{
+      	trace('<div class="error"> FAILED unit tests</div> ');
       }
+      
     } catch(e) {
       trace(e.name + ': ' + e.message);
       socket.emit('compile', {
@@ -286,7 +290,7 @@ $(document).ready(function() {'use strict';
 			$.fancybox('<h1>You Win!</h1>');
 			trace('You Win!');
 		}else{
-			trace('Failed to pass unit tests');
+			trace('<div class="error">FAILED Server Side unit tests </div>');
 		}
   });
 });
