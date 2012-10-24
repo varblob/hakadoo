@@ -50,16 +50,25 @@ $(document).ready(function() {'use strict';
 			, outputs
 			, i
 			, test
-			, correct;
+			, correct
+			, allCorrect
+			, answer;
 
     try {
       outputs = generateOutputs(gameData.question, userCode.getValue());
+      allCorrect = true;
       for(i = 0; i < outputs.length; i++){
-        test = gameData.question.alwaysTest[i];
-        correct = (test === outputs[i]);
-        trace('<li style="'+ (correct ? 'correct' : 'error') + '">' + test + '->' + outputs[i] + '</li>');
+				test = gameData.question.alwaysTest[i];
+        answer = gameData.question.answers[i];
+        correct = (answer === outputs[i]);
+        trace('<div class="'+ (correct ? 'correct' : 'error') + '">' + JSON.stringify(test) + ' -> ' + JSON.stringify(outputs[i]) + '</div>');
+        if(!correct){
+					allCorrect = false;
+        } 
       }
-      // socket.emit('compile', {outputs:outputs, worked:true});
+      if(allCorrect){
+				socket.emit('compile', {answers:outputs, worked:true});
+      }
     } catch(e) {
       trace(e.name + ': ' + e.message);
       socket.emit('compile', {
@@ -249,7 +258,7 @@ $(document).ready(function() {'use strict';
 
       if (gameData.remaining === 0) { //timer finished
         clearInterval(timer);
-        $('#console').prepend('<li>Time out. You BOTH lose!</li>');
+        trace('Time out. You BOTH lose!');
       }
     }, 1000);
 
@@ -259,13 +268,11 @@ $(document).ready(function() {'use strict';
 
     // Set up function header
     userCode.setValue('function(s) {\n\n' + '\t// your code here\n\n' + '\treturn s;\n' + '}');
-    
-		
   });
 
   socket.on('lose', function() {
 		$.fancybox('<h1>You Lose!</h1>');
-    $('#console').prepend('<li>You lose!</li>');
+    trace('You lose!');
   });
   
   // if they cheat lets get their help in making hackadoo better!
@@ -277,9 +284,9 @@ $(document).ready(function() {'use strict';
   socket.on('user:compile', function(data){
 		if(data.worked){
 			$.fancybox('<h1>You Win!</h1>');
-			$('#console').prepend('<li>You Win!</li>');
+			trace('You Win!');
 		}else{
-			$('#console').prepend('<li>Failed to pass unit tests</li>');
+			trace('Failed to pass unit tests');
 		}
   });
 });

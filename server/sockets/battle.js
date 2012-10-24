@@ -29,6 +29,12 @@ module.exports = function(socket) {
     // Send the players' profile information
     Users.findOne({_id: opponentID}, this.e(function(opponent) {
       Users.findOne({_id: userID}, this.e(function(user) {
+				var i;
+				question.answers = [];
+				//push the answers onto the question so the client can test
+				for(i = 0; i<question.alwaysTest.length; i++){
+					question.answers.push(question.answer(question.alwaysTest[i]));
+				}
         socket.emit('ready', {
           user: user
         , opponent: opponent

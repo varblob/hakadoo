@@ -49,13 +49,15 @@ h1.title {
 .console li {
     color: black;
     padding: 3px;
+    list-style: none;
+    border-bottom:1px grey solid;
 }
 
-.console li.error{
+.console li .error{
 	color: red;
 }
 
-.console li.correct{
+.console li .correct{
 	color: green;
 }
 
