@@ -12,7 +12,7 @@ var app = require('flatiron').app
   , gameDuration = 5 * 60 * 1000 // ms
   , initialAttacks = {
       peek: 3
-    , nuke: 3
+    , remove: 3
     , swap: 3
   };
 

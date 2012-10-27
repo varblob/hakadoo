@@ -64,7 +64,7 @@ module.exports = function(socket) {
     /*
      * Attacks
      */
-    ['nuke', 'swap', 'peek'].forEach(function(attackName) { 
+    ['remove', 'swap', 'peek'].forEach(function(attackName) { 
 
       // User attacks
       socket.on(attackName, function() {
@@ -81,7 +81,21 @@ module.exports = function(socket) {
         socket.emit(attackName);
       });
     });
-
+		
+		function checkAnswer(test, answer){
+	  	var i;
+	  	if(test instanceof Array){
+	  		for(i=0; i<test.length; i++){
+	  			if(test[i] !== answer[i]){
+	  				return false;
+	  			}
+	  		}
+	  		return true;
+	  	}else{
+	  		return test === answer;
+	  	}
+	  	
+	  }
 
     /*
      * Verifying a proposed solution
@@ -95,17 +109,16 @@ module.exports = function(socket) {
 		  // if the client thinks it worked double check
 			if(data.worked){
 	      for(i=0; i<rightAnswers.length; i++) {
-	        if (userAnswers[i] !== rightAnswers[i]) {
-	
+	        if (!checkAnswer(userAnswers[i], rightAnswers[i])) {
 	          // The solution is incorrect
-	          socket.emit('user:compile', {works: false});
+	          socket.emit('user:compile', {worked: false});
 	          return;
 	        }
 	      }
 				//TODO add random tests
 				
 	      // The solution is correct
-	      socket.emit('user:compile', {works: true});
+	      socket.emit('user:compile', {worked: true});
 	      app.messages(opponentID, 'lose');
 	      battle.end(userID, self.e(function() {}));
      	}else{
